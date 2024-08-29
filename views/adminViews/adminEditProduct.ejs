@@ -1,0 +1,544 @@
+
+
+
+
+
+ <%- include("../layouts/adminAddProductHeader.ejs") %>
+
+
+
+
+
+
+<div class="sidebar">
+   
+    <a href="/admin/dashboard"><img src="/assets/images/logo/logo_black.png" alt="SwiftCart" class="img-flui"></a>
+    <a href="/admin/dashboard">Dashboard</a>
+    <a href="/admin/product">Product</a>
+    <a href="/admin/categories">Categories</a>
+    <a href="/admin/payments">Payments</a>
+    <a href="/admin/brands">Brands</a>
+    <a href="/admin/userManagement">Users</a>
+    <a href="/admin/orders">Orders</a>
+    <a href="/admin/coupon">Coupon</a>
+    <a href="/admin/banner">Banner</a>
+    <a href="/admin/logout">Log Out</a>
+</div>
+
+<div class="content">
+    <div class="header">
+        <h1>Edit Product</h1>
+    </div>
+
+    <div class="form-container">
+        <form action="/admin/updateProduct/<%= product._id %>" method="POST" enctype="multipart/form-data" id="editProductForm">
+            <input type="hidden" id="productId" value="<%= product._id %>">
+            <div class="form-group">
+                <label for="productName">Product Name</label>
+                <input type="text" name="productName" class="form-control" id="productName" value="<%= product.name %>">
+                <p id="productNameError" style="color: red;" class="error-message"></p>
+            </div>
+
+            <div class="form-group">
+                <label for="productPrice">Price</label>
+                <input type="text" name="productPrice" class="form-control" id="productPrice" value="<%= product.price %>">
+                <p id="productPriceError" style="color: red;" class="error-message"></p>
+            </div>
+
+            <div class="form-group">
+                <label for="productDescription">Description</label>
+                <input type="text" name="productDescription" class="form-control" id="productDescription" value="<%= product.description %>">
+                <p id="productDescriptionError" style="color: red;" class="error-message"></p>
+            </div>
+
+
+            <div class="form-group">
+                <label for="productSpecifications">Specifications</label>
+                <div id="specificationsContainer">
+                    <% if (product.specification && product.specification.length > 0) { %>
+                        <% product.specification.forEach((spec, index) => { %>
+                            <div class="specification-group">
+                                <input type="text" name="specifications[<%= index %>][key]" class="form-control" placeholder="Key" value="<%= spec.key %>" >
+                                <p class="error-message spec-key-error" style="color: red;"></p>
+                                <input type="text" name="specifications[<%= index %>][value]" class="form-control mt-2" placeholder="Value" value="<%= spec.value %>" >
+                                <p class="error-message spec-value-error" style="color: red;"></p>
+                                <span class="remove-btn">Remove</span>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <div class="specification-group">
+                            <input type="text" name="specifications[0][key]" class="form-control" placeholder="Key" >
+                            <p class="error-message spec-key-error" style="color: red;"></p>
+                            <input type="text" name="specifications[0][value]" class="form-control mt-2" placeholder="Value" >
+                            <p class="error-message spec-value-error" style="color: red;"></p>
+                        </div>
+                    <% } %>
+                </div>
+                <button type="button" id="addSpecification" class="btn btn-secondary mt-2">Add Specification</button>
+            </div>
+
+
+            <div class="form-group">
+                <label for="productVariants">Varients</label>
+                <div id="variantsContainer">
+                    <% if (product.varients && product.varients.length > 0) { %>
+                        <% product.varients.forEach((variant, variantIndex) => { %>
+                            <div class="variant-group" data-variant-id="<%= variantIndex %>">
+                                <label>Variant <%= variantIndex + 1 %></label>
+                                <input type="text" class="form-control" placeholder="Color" name="productVarients[<%= variantIndex %>][color]" value="<%= variant.color.color %>">
+                                <p class="error-message color-error" style="color: red;"></p>
+                                <input type="text" class="form-control mt-2" placeholder="Color Code" name="productVarients[<%= variantIndex %>][colorCode]" value="<%= variant.color.colorCode %>">
+                                <p class="error-message color-code-error" style="color: red;"></p>
+                                <input type="number" class="form-control mt-2" placeholder="Stock" name="productVarients[<%= variantIndex %>][stock]" value="<%= variant.stock %>">
+                                <p class="error-message stock-error" style="color: red;"></p>
+
+                                <div class="form-group mt-2">
+                                    <label>Images for Variant <%= variantIndex + 1 %></label>
+                                    <input type="file" name='varients[<%=variantIndex%>][images]' class="form-control-file variant-images" multiple>
+                                    <p class="error-message images-error" style="color: red;"></p>
+                                </div>
+
+
+                                <div class="image-previews">
+    <% variant.images.forEach((image, imageIndex) => { %>
+        <div class="img-preview-container">
+            <img src="<%= image.url %>" class="img-fluid mb-2" style="max-width: 200px;" data-image-index="<%= imageIndex %>">
+            <input type="file" class="form-control-file variant-image-upload mt-2" name="varients[<%=variantIndex%>][images][<%= imageIndex %>]" data-image-index="<%= imageIndex %>">
+            <input type="hidden" name="varients[<%=variantIndex%>][existingImages][<%= imageIndex %>]" value="<%= image.url %>">
+            <input type="hidden" name="varients[<%=variantIndex%>][imageStatus][<%= imageIndex %>]" value="unchanged">
+            <button type="button" class="btn btn-primary btn-sm replace-image mt-2">Replace</button>
+            <button type="button" class="btn btn-danger btn-sm remove-image mt-2">Remove</button>
+        </div>
+    <% }) %>
+</div>
+
+                                <button type="button" class="btn btn-danger mt-2 remove-variant">Remove Variant</button>
+                            </div>
+                        <% }); %>
+                    <% } %>
+                </div>
+                <button type="button" id="addVariant" class="btn btn-secondary mt-2">Add Variant</button>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+
+<div class="modal fade" id="cropperModal" tabindex="-1"  role="dialog" aria-labelledby="cropperModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" >
+      <div class="modal-content" >
+        <div class="modal-header" >
+          <h5 class="modal-title" id="cropperModalLabel">Crop Image</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" >
+          <div >
+            <img id="cropperImage" src="" alt="Image to crop" style="max-width: 100%;">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="cropImage">Crop</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    $(document).ready(function() {
+        let specificationCount = $('#specificationsContainer .specification-group').length;
+        let variantCount = $('#variantsContainer .variant-group').length;
+    
+        // Add new specification input fields
+        $('#addSpecification').click(function() {
+            $('#specificationsContainer').append(`
+                <div class="specification-group">
+                    <input type="text" name="specifications[${specificationCount}][key]" class="form-control" placeholder="Key" >
+                    <input type="text" name="specifications[${specificationCount}][value]" class="form-control mt-2" placeholder="Value" >
+                    <button type="button" class="btn btn-danger mt-2 remove-btn">Remove Specification</button>
+                </div>
+            `);
+            specificationCount++;
+        });
+    
+        // Remove specification input fields
+        $('#specificationsContainer').on('click', '.remove-btn', function() {
+            $(this).parent().remove();
+        });
+    
+        // Add new variant
+        $('#addVariant').click(function() {
+            $('#variantsContainer').append(`
+                <div class="variant-group" data-variant-id="${variantCount}">
+                    <label>Variant ${variantCount + 1}</label>
+                    <input type="text" class="form-control" placeholder="Color" name="varients[${variantCount}][color]">
+                    <input type="text" class="form-control mt-2" placeholder="Color Code" name="varients[${variantCount}][colorCode]">
+                    <input type="number" class="form-control mt-2" placeholder="Stock" name="varients[${variantCount}][stock]">
+    
+                    <div class="form-group mt-2">
+                        <label>Images for Variant ${variantCount + 1}</label>
+                        <input type="file"  class="form-control-file variant-images" multiple>
+                    </div>
+    
+                    <div class="image-previews"></div>
+    
+                    <button type="button" class="btn btn-danger mt-2 remove-variant">Remove Variant</button>
+                </div>
+            `);
+            variantCount++;
+        });
+    
+        $('#variantsContainer').on('click', '.remove-variant', function() {
+            $(this).closest('.variant-group').remove();
+        });
+    
+        let cropper;
+    let currentImageElement;
+    let currentFileInput;
+
+    $('#variantsContainer').on('change', '.variant-image-upload', function(e) {
+        const file = e.target.files[0];
+        currentFileInput = this;
+        const imgElement = $(this).closest('.img-preview-container').find('img');
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                currentImageElement = imgElement[0];
+                $('#cropperImage').attr('src', event.target.result);
+                $('#cropperModal').modal('show');
+
+                if (cropper) {
+                    cropper.destroy();
+                }
+
+                const cropperImage = document.getElementById('cropperImage');
+                cropper = new Cropper(cropperImage, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    autoCropArea: 1,
+                    minCropBoxWidth: 200,
+                    minCropBoxHeight: 200,
+                });
+            };
+
+            reader.readAsDataURL(file);
+        }
+    });
+
+
+
+
+
+
+    
+    $('#cropImage').click(function() {
+        if (!cropper) {
+            return;
+        }
+
+        const canvas = cropper.getCroppedCanvas({
+            width: 400,
+            height: 400
+        });
+
+        canvas.toBlob(function(blob) {
+            const url = URL.createObjectURL(blob);
+            $(currentImageElement).attr('src', url);
+
+            // Create a new File object from the blob
+            const croppedFile = new File([blob], "cropped_image.jpg", { type: "image/jpeg" });
+
+            // Create a new FileList containing the cropped file
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(croppedFile);
+
+            // Set the new FileList as the files property of the file input
+            $(currentFileInput)[0].files = dataTransfer.files;
+
+            // Update the hidden input to indicate this image has been changed
+            $(currentFileInput).closest('.img-preview-container').find('input[type="hidden"]').val('changed');
+
+            $('#cropperModal').modal('hide');
+        }, 'image/jpeg');
+    });
+
+
+
+    
+    $('#variantsContainer').on('click', '.remove-image', function() {
+        const container = $(this).closest('.img-preview-container');
+        container.find('input[type="hidden"]').val('removed');
+        container.hide();
+    });
+
+
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const editProductForm = document.getElementById('editProductForm');
+    const addSpecificationButton = document.getElementById('addSpecification');
+    const addVariantButton = document.getElementById('addVariant');
+    const productId = document.getElementById('productId').value; // Get the product ID from the hidden input
+    let specificationCount = document.querySelectorAll('.specification-group').length;
+    let variantCount = document.querySelectorAll('.variant-group').length;
+
+    // Add new specification
+    addSpecificationButton.addEventListener('click', function() {
+        const container = document.getElementById('specificationsContainer');
+        const newSpec = document.createElement('div');
+        newSpec.className = 'specification-group';
+        newSpec.innerHTML = `
+            <input type="text" name="specifications[${specificationCount}][key]" class="form-control" placeholder="Key" >
+            <p class="error-message spec-key-error"></p>
+            <input type="text" name="specifications[${specificationCount}][value]" class="form-control mt-2" placeholder="Value" >
+            <p class="error-message spec-value-error"></p>
+            <button type="button" class="btn btn-danger mt-2 remove-btn">Remove Specification</button>
+        `;
+        container.appendChild(newSpec);
+        specificationCount++;
+    });
+
+    // Remove specification
+    document.getElementById('specificationsContainer').addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-btn')) {
+            e.target.closest('.specification-group').remove();
+        }
+    });
+
+    // Add new variant
+    addVariantButton.addEventListener('click', function() {
+        const container = document.getElementById('variantsContainer');
+        const newVariant = document.createElement('div');
+        newVariant.className = 'variant-group';
+        newVariant.dataset.variantId = variantCount;
+        newVariant.innerHTML = `
+            <label>Variant ${variantCount + 1}</label>
+            <input type="text" class="form-control" placeholder="Color" name="productVarients[${variantCount}][color]">
+            <p class="error-message color-error"></p>
+            <input type="text" class="form-control mt-2" placeholder="Color Code" name="productVarients[${variantCount}][colorCode]">
+            <p class="error-message color-code-error"></p>
+            <input type="number" class="form-control mt-2" placeholder="Stock" name="productVarients[${variantCount}][stock]">
+            <p class="error-message stock-error"></p>
+            <div class="form-group mt-2">
+                <label>Images for Variant ${variantCount + 1}</label>
+                <input type="file" name="varients[${variantCount}][images]" class="form-control-file variant-images" multiple>
+                <p class="error-message images-error"></p>
+            </div>
+            <div class="image-previews"></div>
+            <button type="button" class="btn btn-danger mt-2 remove-variant">Remove Variant</button>
+        `;
+        container.appendChild(newVariant);
+        variantCount++;
+    });
+
+    // Remove variant
+    document.getElementById('variantsContainer').addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-variant')) {
+            e.target.closest('.variant-group').remove();
+        }
+    });
+
+    // Form submission and validation
+    editProductForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const variantGroups = document.querySelectorAll('.variant-group');
+        let globalErrors = [];
+
+        // Clear previous errors
+        document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+
+        // Validate product name
+        const productName = formData.get('productName');
+        if (productName.length < 8) {
+            globalErrors.push('Product Name needs at least 8 characters');
+            document.getElementById('productNameError').textContent = 'Product Name needs at least 8 characters';
+        }
+
+        // Validate price
+        const productPrice = formData.get('productPrice');
+        if (isNaN(productPrice) || productPrice < 1) {
+            globalErrors.push('Product Price must be a number and minimum 1');
+            document.getElementById('productPriceError').textContent = 'Product Price must be a number and minimum 1';
+        }
+
+        // Validate description
+        const productDescription = formData.get('productDescription');
+        if (productDescription.length < 20) {
+            globalErrors.push('Product Description needs at least 20 characters');
+            document.getElementById('productDescriptionError').textContent = 'Product Description needs at least 20 characters';
+        }
+
+        // Validate specifications
+        const specifications = document.querySelectorAll('.specification-group');
+        if (specifications.length === 0) {
+            globalErrors.push('At least one specification is required');
+        } else {
+            specifications.forEach((spec, index) => {
+                const key = spec.querySelector('input[name$="[key]"]').value;
+                const value = spec.querySelector('input[name$="[value]"]').value;
+                if (key.length < 2) {
+                    globalErrors.push(`Specification ${index + 1} key needs at least 2 characters`);
+                    spec.querySelector('.spec-key-error').textContent = 'Key needs at least 2 characters';
+                }
+                if (value.length < 2) {
+                    globalErrors.push(`Specification ${index + 1} value needs at least 2 characters`);
+                    spec.querySelector('.spec-value-error').textContent = 'Value needs at least 2 characters';
+                }
+            });
+        }
+
+        // Validate variants
+        variantGroups.forEach((group, index) => {
+            const color = group.querySelector('input[name$="[color]"]').value;
+            const colorCode = group.querySelector('input[name$="[colorCode]"]').value;
+            const stock = group.querySelector('input[name$="[stock]"]').value;
+            const images = group.querySelectorAll('.img-preview-container');
+
+            if (!color.trim()) {
+                globalErrors.push(`Variant ${index + 1} color is required`);
+                group.querySelector('.color-error').textContent = 'Color is required';
+            }
+
+            if (!colorCode.match(/^#[0-9A-F]{6}$/i)) {
+                globalErrors.push(`Variant ${index + 1} has an invalid color code`);
+                group.querySelector('.color-code-error').textContent = 'Invalid color code format';
+            }
+
+            if (isNaN(stock) || stock < 0) {
+                globalErrors.push(`Variant ${index + 1} stock must be a non-negative number`);
+                group.querySelector('.stock-error').textContent = 'Stock must be a non-negative number';
+            }
+
+            // if (images.length < 3) {
+            //     globalErrors.push(`Variant ${index + 1} needs at least 3 images`);
+            //     group.querySelector('.images-error').textContent = 'At least 3 images are required';
+            // }
+        });
+
+        if (globalErrors.length > 0) {
+            document.getElementById('globalErrorMessages').innerHTML = globalErrors.join('<br>');
+            return; // Prevent form submission
+        }
+
+        // If validation passes, submit the form
+        try {
+            const response = await fetch('/admin/updateProduct/' + productId, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                Swal.fire({
+                    title: 'Success!',
+                    text: data.message,
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/admin/product';
+                    }
+                });
+            } else {
+                
+                // Handle validation errors from server
+                const validationErrors = data.validationErrors || {};
+                Object.keys(validationErrors).forEach(key => {
+                    const errorElement = document.getElementById(`${key}Error`);
+                    if (errorElement) {
+                        errorElement.textContent = validationErrors[key];
+                    }
+                });
+            }
+        } catch (error) {
+         
+            console.error('Error:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'An error occurred while updating the product.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+    });
+});
+    </script>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<%- include("../layouts/footer.ejs") %>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwiftCart Coupons Page</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            background-color: #f8f9fa;
+            padding: 10px;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 10px;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .sidebar a:hover {
+            background-color: #e9ecef;
+            border-radius: 5px;
+        }
+
+        .content {
+            margin-left: 200px;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-active {
+            background-color: #28a745;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .status-inactive {
+            background-color: #dc3545;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <a href="/admin/dashboard"><img src="/assets/images/logo/logo_black.png" alt="SwiftCart" class="img-flui"></a>
+        <a href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/product">Product</a>
+        <a href="/admin/categories">Categories</a>
+        <a href="/admin/payments">Payments</a>
+        <a href="/admin/brands">Brands</a>
+        <a href="/admin/userManagement">Users</a>
+        <a href="/admin/orders">Orders</a>
+        <a href="/admin/coupon">Coupon</a>
+        <a href="/admin/banner">Banner</a>
+        <a href="/admin/logout">Log Out</a>
+    </div>
+
+    <div class="content">
+        <div class="header">
+            <h1>Coupons Page</h1>
+            <button class="btn btn-primary">Add New Coupon</button>
+        </div>
+
+        <div class="table-responsive mt-4">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Coupon Code</th>
+                        <th>Discount Type</th>
+                        <th>Discount Value</th>
+                        <th>Expiry Date</th>
+                        <th>Usage Limit</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Example Coupon Row -->
+                    <tr>
+                        <td>SUMMER2024</td>
+                        <td>Percentage</td>
+                        <td>15%</td>
+                        <td>12/31/2024</td>
+                        <td>Unlimited</td>
+                        <td>
+                            <span class="status-active">Active</span>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-info">Edit</button>
+                            <button class="btn btn-sm btn-danger">Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>WINTER2024</td>
+                        <td>Fixed Amount</td>
+                        <td>$20</td>
+                        <td>06/30/2024</td>
+                        <td>50</td>
+                        <td>
+                            <span class="status-inactive">Inactive</span>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-info">Edit</button>
+                            <button class="btn btn-sm btn-danger">Delete</button>
+                        </td>
+                    </tr>
+                    <!-- Add more coupon rows as needed -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

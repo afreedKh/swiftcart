@@ -1,0 +1,257 @@
+
+
+
+
+
+
+
+
+
+<%-include("../layouts/adminProductHeader.ejs")%>
+    <div class="sidebar">
+        <a href="/admin/dashboard"><img src="/assets/images/logo/logo_black.png" alt="SwiftCart" class="img-flui"></a>
+        <a href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/product">Product</a>
+        <a href="/admin/categories">Categories</a>
+        <a href="/admin/payments">Payments</a>
+        <a href="/admin/brands">Brands</a>
+        <a href="/admin/userManagement">Users</a>
+        <a href="/admin/orders">Orders</a>
+        <a href="/admin/coupon">Coupon</a>
+        <a href="/admin/banner">Banner</a>
+        <a onclick="message(successMessage='Logout Successfully')" href="/admin/logout">Log Out</a>
+    </div>
+
+    <div class="content">
+        <div class="header">
+            <h1>Product Page</h1>
+            <a href="/admin/addProduct"><button class="btn btn-primary" data-toggle="modal" data-target="#addProductModal">Add Product</button></a>
+        </div>
+
+        <div class="table-responsive mt-4">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Product Image</th>
+                        <th>Product Name</th>
+                        <th>Price</th>
+                        <th>Color</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Stock</th>
+                        <th>Updated</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+               
+
+                <tbody>
+                    <% product.forEach((product, index) => { %>
+                    <tr>
+                        <td data-label="Product Image">
+                            <% if (product.varients && product.varients.length > 0) { %>
+                                <% var firstVariant = product.varients[0]; %>
+                                <% if (firstVariant.images && firstVariant.images.length > 0) { %>
+                                    <img src="<%= firstVariant.images[0].url %>" alt="<%= firstVariant.images[0].altText %>" class="product-img">
+                                <% } else { %>
+                                    <p>No image available</p> <!-- Fallback text if no images are present -->
+                                <% } %>
+                            <% } %>
+                        </td>
+                        <td data-label="Product Name"><%= product.name %></td>
+                        <td data-label="Price">
+                            <% 
+                                const discountPercentage = 30;
+                                const originalPrice = product.price;
+                                const discountedPrice = originalPrice * (1 - discountPercentage / 100);
+                            %>
+                            <div class="original-price">Rs.<%= originalPrice.toFixed(2) %></div>
+                            <div class="discounted-price">Rs.<%= discountedPrice.toFixed(2) %></div>
+                        </td>
+                        <td data-label="Color">
+                            <% if (product.varients && product.varients.length > 0) { %>
+                                <%product.varients.forEach((varient)=>{%>
+                                        <%=varient.color.color%>
+                                <%})%>
+                                   
+                            <% }  else { %>
+                                N/A
+                            <% }%>
+                        </td>
+                        <td data-label="Description"><%= product.description %></td>
+                        <td data-label="Status"><%= product.isDeleted ? 'Blocked' : 'Active' %></td>
+                        <td data-label="Stock">
+                            <% if (product.varients && product.varients.length > 0) { %>
+                                <%= product.varients[0].stock %>
+                            <% } else { %>
+                                N/A
+                            <% } %>
+                        </td>
+                        <td data-label="Updated On"><%= product.updatedAt.toLocaleDateString() %></td>
+                        <td data-label="Actions">
+                            <a href="/admin/editProduct/<%= product._id %>"><button class="btn btn-sm btn-primary">Edit</button></a>
+                            <% if (product.isDeleted) { %>
+                            <button onclick="unblock('<%= product._id %>')" type="submit" class="btn btn-sm btn-success">Unblock</button>
+                            <% } else { %>
+                            <button onclick="block('<%= product._id %>')" type="submit" class="btn btn-sm btn-danger">Block</button>
+                            <% } %>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+                
+                <style>
+                    .original-price {
+                        text-decoration: line-through;
+                        color: #999;
+                    }
+                    .discounted-price {
+                        color: #f00;
+                        font-weight: bold;
+                    }
+                </style>
+                
+                
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const successMessage = urlParams.get('success');
+            if (successMessage) {
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: successMessage,
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    window.location.href = "/admin/product"; // Redirect to remove query parameters
+                });
+            }
+        });
+
+        function block(id){
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, block it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "GET",
+                        url: `/admin/blockProduct/${id}`,
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Blocked!",
+                                    text: "Product has been blocked.",
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error",
+                                    text: response.message,
+                                });
+                            }
+                        },
+                        error: function() {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: "An error occurred while blocking the product"
+                            });
+                        }
+                    });
+                }
+            })
+        }
+
+        function unblock(id){
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, unblock it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "GET",
+                        url: `/admin/unblockProduct/${id}`,
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Unblocked!",
+                                    text: "Product has been unblocked.",
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error",
+                                    text: response.message,
+                                });
+                            }
+                        },
+                        error: function() {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: "An error occurred while unblocking the product"
+                            });
+                        }
+                    });
+                }
+            })
+        }
+
+        function message(successMessage){
+            if(successMessage){
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: successMessage,
+                    showConfirmButton: false,
+                    timer: 3000
+                }).then(() => {
+                    window.location.href = "/admin"; // Redirect to remove query parameters
+                });
+            }
+        }
+    </script>
+
+<%-include("../layouts/footer.ejs")%>

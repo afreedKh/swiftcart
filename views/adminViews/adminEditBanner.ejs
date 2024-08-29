@@ -1,0 +1,52 @@
+<%-include("../layouts/adminBannerHeader.ejs") %>
+<div class="sidebar">
+    <a href="/admin/dashboard"><img src="/assets/images/logo/logo_black.png" alt="SwiftCart" class="img-flui"></a>
+        <a href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/product">Product</a>
+        <a href="/admin/categories">Categories</a>
+        <a href="/admin/payments">Payments</a>
+        <a href="/admin/brands">Brands</a>
+        <a href="/admin/userManagement">Users</a>
+        <a href="/admin/orders">Orders</a>
+        <a href="/admin/coupon">Coupon</a>
+        <a href="/admin/banner">Banner</a>
+        <a href="/admin/logout">Log Out</a>
+</div>
+
+<div class="content">
+    <div class="header">
+        <h1>Edit Banner</h1>
+        <form action="/admin/editBanner/<%= banner._id %>" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="bannerImage">Upload New Banner Image (Optional)</label>
+                <input type="file" name="bannerImage" class="form-control-file" id="bannerImage">
+            </div>
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" name="title" class="form-control" id="title" value="<%= banner.title %>" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea name="description" class="form-control" id="description" required><%= banner.description %></textarea>
+            </div>
+            <div class="form-group">
+                <label for="startDate">Start Date</label>
+                <input type="date" name="startDate" class="form-control" id="startDate" value="<%= banner.startDate.toISOString().substring(0, 10) %>" required>
+            </div>
+            <div class="form-group">
+                <label for="endDate">End Date</label>
+                <input type="date" name="endDate" class="form-control" id="endDate" value="<%= banner.endDate.toISOString().substring(0, 10) %>" required>
+            </div>
+            <div class="form-group">
+                <label for="status">Status</label>
+                <select name="status" class="form-control" id="status" required>
+                    <option value="Active" <%= banner.status === 'Active' ? 'selected' : '' %>>Active</option>
+                    <option value="Inactive" <%= banner.status === 'Inactive' ? 'selected' : '' %>>Inactive</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Banner</button>
+        </form>
+    </div>
+</div>
+
+<%-include("../layouts/footer.ejs") %>

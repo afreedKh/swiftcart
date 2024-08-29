@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwiftCart Banner Page</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+   
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+    
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            background-color: #f8f9fa;
+            padding: 10px;
+            width: 200px;
+        }
+    
+        .sidebar a {
+            display: block;
+            padding: 10px;
+            color: #333;
+            text-decoration: none;
+        }
+    
+        .sidebar a:hover {
+            background-color: #e9ecef;
+            border-radius: 5px;
+        }
+    
+        .content {
+            margin-left: 200px;
+            padding: 20px;
+        }
+    
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+    
+        .banner-image {
+            width: 100px;
+            height: auto;
+        }
+    
+        .status-active {
+            background-color: #28a745;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+    
+        .status-inactive {
+            background-color: #dc3545;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+    
+        .full-width-banner {
+            width: 100%;
+            height: auto;
+        }
+        
+        .img-flui {
+            width: 130px;
+        }
+    
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+    
+            .content {
+                margin-left: 0;
+            }
+    
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    
+        @media (max-width: 576px) {
+            .sidebar a {
+                padding: 8px;
+                font-size: 14px;
+            }
+        }
+    
+        @media (max-width: 990px) {
+            .table-responsive {
+                overflow-x: hidden; /* Disable horizontal scrolling */
+            }
+    
+            .table {
+                display: block;
+                width: 100%;
+                overflow-x: auto; /* Ensure vertical scrolling if necessary */
+                white-space: nowrap;
+            }
+    
+            .table thead {
+                display: none;
+            }
+    
+            .table tbody, .table tr {
+                display: block;
+                width: 100%;
+                border-bottom: 2px solid #000000; /* Border between rows */
+            }
+    
+            .table td {
+                display: block;
+                width: 100%;
+                text-align: left;
+                padding: 8px;
+                position: relative;
+                border-bottom: 1px solid #ddd; /* Border at the bottom of cells */
+            }
+    
+            .table td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 0;
+                width: 45%;
+                padding-left: 10px;
+                font-weight: bold;
+                text-align: left;
+                top: 0;
+                background: #f8f9fa;
+            }
+    
+            .table td:last-child {
+                border-bottom: 0;
+            }
+        }
+    </style>
+    
+</head>
+
+<body>

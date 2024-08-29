@@ -1,0 +1,285 @@
+<%- include("../layouts/adminBannerHeader.ejs") %>
+<div class="sidebar">
+    <a href="/admin/dashboard"><img src="/assets/images/logo/logo_black.png" alt="SwiftCart" class="img-flui"></a>
+        <a href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/product">Product</a>
+        <a href="/admin/categories">Categories</a>
+        <a href="/admin/payments">Payments</a>
+        <a href="/admin/brands">Brands</a>
+        <a href="/admin/userManagement">Users</a>
+        <a href="/admin/orders">Orders</a>
+        <a href="/admin/coupon">Coupon</a>
+        <a href="/admin/banner">Banner</a>
+        <a onclick="message(successMessage='Logout Successfully')" href="/admin/logout">Log Out</a>
+</div>
+
+<div class="content">
+    <div class="header">
+        <h1>Banners Page</h1>
+        <form action="/admin/uploadBanner" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="bannerImage">Upload Banner Image</label>
+                <input type="file" name="bannerImage" class="form-control-file" id="bannerImage" required>
+            </div>
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" name="title" class="form-control" id="title" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea name="description" class="form-control" id="description" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="startDate">Start Date</label>
+                <input type="date" name="startDate" class="form-control" id="startDate" required>
+            </div>
+            <div class="form-group">
+                <label for="endDate">End Date</label>
+                <input type="date" name="endDate" class="form-control" id="endDate" required>
+            </div>
+            <div class="form-group">
+                <label for="status">Status</label>
+                <select name="status" class="form-control" id="status" required>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Add New Banner</button>
+        </form>
+    </div>
+
+    
+
+    <div class="table-responsive mt-4">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Banner Image</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% banners.forEach((banner) => { %>
+                    <tr>
+                        <td><img src="/assets/images/hero-slider/home-3/<%= banner.image %>" alt="Banner Image" class="banner-image"></td>
+                        <td><%= banner.title %></td>
+                        <td><%= banner.description %></td>
+                        <td><%= banner.startDate.toDateString() %></td>
+                        <td><%= banner.endDate.toDateString() %></td>
+                        <td><%= banner.status %></td>
+                        <td>
+                            <a href="/admin/editBanner/<%=banner._id%>"> <button class="btn btn-sm btn-info">Edit</button></a>
+                            <!-- <button onclick="deleteConfirm('<%=banner._id%>')" class="btn btn-sm btn-danger">Delete</button> -->
+                            <% if (banner.isDeleted) { %>
+                              
+
+                                <button onclick="unblock('<%=banner._id %>')" type="submit" class="btn btn-sm btn-success">Unblock</button>
+                           
+                        <% } else { %>
+                            
+                                <button onclick="block('<%= banner._id %>')" type="submit" class="btn btn-sm btn-danger">Block</button>
+                        <% } %>
+                        </td>
+                    </tr>
+                    <!-- /admin/deleteBanner/<%=banner._id%> -->
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+        </ul>
+    </nav>
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+     <script>
+        // function deleteConfirm(id) {
+        //     Swal.fire({
+        //         title: 'Are you sure?',
+        //         text: "You won't be able to revert this!",
+        //         icon: 'warning',
+        //         showCancelButton: true,
+        //         confirmButtonColor: '#3085d6',
+        //         cancelButtonColor: '#d33',
+        //         confirmButtonText: 'Yes, delete it!'
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             // If user confirms, make the AJAX request to delete
+        //             $.ajax({
+        //                 type: "DELETE",
+        //                 url: `/admin/deleteBanner/${id}`,
+        //                 success: function(response) {
+        //                     if (response.success) {
+        //                         Swal.fire({
+        //                             icon: "success",
+        //                             title: "Deleted!",
+        //                             text: "Banner has been deleted.",
+        //                             showConfirmButton: false,
+        //                             timer: 1500,
+        //                         }).then(() => {
+        //                             // Reload the page or remove the deleted banner from the DOM
+        //                             location.reload();
+        //                         });
+        //                     } else {
+        //                         Swal.fire({
+        //                             icon: "error",
+        //                             title: "Error",
+        //                             text: response.message,
+        //                         });
+        //                     }
+        //                 },
+        //                 error: function() {
+        //                     Swal.fire({
+        //                         icon: "error",
+        //                         title: "Error",
+        //                         text: "An error occurred while deleting the banner"
+        //                     });
+        //                 }
+        //             });
+        //         }
+        //     })
+        // }
+
+
+        function block(id){
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, block it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // If user confirms, make the AJAX request to delete
+                    $.ajax({
+                        type: "GET",
+                        url: `/admin/blockBanner/${id}`,
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Blocked!",
+                                    text: "Banner has been blocked.",
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                }).then(() => {
+                                    // Reload the page or remove the deleted banner from the DOM
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error",
+                                    text: response.message,
+                                });
+                            }
+                        },
+                        error: function() {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: "An error occurred while User blocking"
+                            });
+                        }
+                    });
+                }
+            })
+        }
+
+
+
+
+
+
+
+        function unblock(id){
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Unblock it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // If user confirms, make the AJAX request to delete
+                    $.ajax({
+                        type: "GET",
+                        url: `/admin/unblockBanner/${id}`,
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Unblocked!",
+                                    text: "Banner has been unblock.",
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                }).then(() => {
+                                    // Reload the page or remove the deleted banner from the DOM
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error",
+                                    text: response.message,
+                                });
+                            }
+                        },
+                        error: function() {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: "An error occurred while User blocking"
+                            });
+                        }
+                    });
+                }
+            })
+        }
+
+
+        function message(successMessage){
+        if(successMessage){
+
+        
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: successMessage,
+                showConfirmButton: false,
+                timer: 3000
+            }).then(() => {
+                window.location.href = "/admin"; // Redirect to remove query parameters
+            });
+        }
+    }
+
+    </script>
+    
+
+
+<%- include("../layouts/footer.ejs") %>

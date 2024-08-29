@@ -1,0 +1,33 @@
+<%-include("../layouts/adminEditCategory.ejs") %>
+<div class="sidebar">
+    <a href="/admin/dashboard"><img src="/assets/images/logo/logo_black.png" alt="SwiftCart" class="img-flui"></a>
+        <a href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/product">Product</a>
+        <a href="/admin/categories">Categories</a>
+        <a href="/admin/payments">Payments</a>
+        <a href="/admin/brands">Brands</a>
+        <a href="/admin/userManagement">Users</a>
+        <a href="/admin/orders">Orders</a>
+        <a href="/admin/coupon">Coupon</a>
+        <a href="/admin/banner">Banner</a>
+        <a href="/admin/logout">Log Out</a>
+</div>
+
+<div class="content">
+    <div class="header">
+        <h1>Add Category</h1>
+        <form action="/admin/verifyCategories" method="POST">
+            <div class="form-group">
+                <label for="Category name">Add Category</label>
+                <input type="text" name="name" value="<%=locals.name%>" class="form-control-file" id="">
+                <p style="color: red;"><%= locals.invalidName ? invalidName : "" %></p>
+            <button type="submit" class="btn btn-primary">Add Category</button>
+        </form>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+<%-include("../layouts/footer.ejs") %>
