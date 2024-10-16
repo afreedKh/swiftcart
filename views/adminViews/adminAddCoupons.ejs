@@ -1,0 +1,156 @@
+
+    <%- include("../layouts/adminCategoryHeader.ejs") %>
+
+    <div class="container">
+        
+        <h1>Add New Coupon</h1>
+
+        <form id="couponForm" action="/admin/addCoupons" method="POST">
+            <div class="form-group">
+                <label for="code">Coupon Code</label>
+                <input type="text" id="code" name="code" class="form-control" oninput="this.value=this.value.toUpperCase()">
+                <div class="error-message" id="codeError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="discountValue">Discount (Percentage ) <i class="fas fa-percent"></i></label>
+                <input type="number" id="discountValue" name="discountValue" class="form-control" step="0.01">
+                <div class="error-message" id="discountValueError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="expiryDate">Expiry Date</label>
+                <input type="date" id="expiryDate" name="expiryDate" class="form-control">
+                <div class="error-message" id="expiryDateError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="usageLimit">Usage Limit</label>
+                <input type="number" id="usageLimit" name="usageLimit" class="form-control" >
+                <div class="error-message" id="usageLimitError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="minPurchaseAmount">Minimum Purchase Amount</label>
+                <input type="number" id="minPurchaseAmount" name="minPurchaseAmount" class="form-control" step="0.01" >
+                <div class="error-message" id="minPurchaseAmountError"></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Coupon</button>
+            <a href="/admin/coupons" class="btn btn-secondary">Cancel</a>
+        </form>
+        <br>
+        <a href="/admin/coupons"> <button type="submit" class="btn btn-primary">Go Back</button></a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.getElementById('couponForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            let isValid = true;
+
+            // Clear previous error messages
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+
+            // Validate Coupon Code
+            const code = document.getElementById('code').value.trim();
+            const couponCodeRegex = /^[A-Z0-9]{8}$/; 
+            const currentDate = new Date();
+
+            if (!code || !couponCodeRegex.test(code)) {
+                document.getElementById('codeError').textContent = 'Coupon code must be 8 alphanumeric characters.';
+                isValid = false;
+            } else {
+                document.getElementById('codeError').textContent = ''; // Clear error message if valid
+            }
+
+
+            // Validate Discount Value
+            const discountValue = document.getElementById('discountValue').value;
+            if (!discountValue ) {
+                document.getElementById('discountValueError').textContent = 'Discount value must be greater than 0.';
+                isValid = false;
+            }else if(discountValue <= 0){
+                document.getElementById('discountValueError').textContent = 'Discount value must be greater than 0.';
+                isValid = false;
+            }else if(discountValue>100){
+                document.getElementById('discountValueError').textContent = 'Discount value must be lesser than 100.';
+                isValid = false;
+            }
+
+            // Validate Expiry Date
+            const expiryDate = document.getElementById('expiryDate').value;
+            if (!expiryDate) {
+                document.getElementById('expiryDateError').textContent = 'Expiry date is required.';
+                isValid = false;
+            }else if(new Date(expiryDate) < currentDate){
+                document.getElementById('expiryDateError').textContent = 'Expiry date must be in the future.';
+                isValid =false
+            }
+
+            // Validate Usage Limit
+            const usageLimit = document.getElementById('usageLimit').value;
+            if (!usageLimit || usageLimit < 1) {
+                document.getElementById('usageLimitError').textContent = 'Usage limit must be at least 1.';
+                isValid = false;
+            }
+
+            // Validate Minimum Purchase Amount
+            const minPurchaseAmount = document.getElementById('minPurchaseAmount').value;
+            if (minPurchaseAmount < 1||!minPurchaseAmount) {
+                document.getElementById('minPurchaseAmountError').textContent = 'Minimum purchase amount must be at least 1.';
+                isValid = false;
+            }   
+
+            // Prevent form submission if validation fails
+            if (isValid) {
+                const formData = {
+                    code: document.getElementById('code').value.trim(),
+                    discountValue: document.getElementById('discountValue').value,
+                    expiryDate: document.getElementById('expiryDate').value,
+                    usageLimit: document.getElementById('usageLimit').value,
+                    minPurchaseAmount: document.getElementById('minPurchaseAmount').value
+                };
+
+        // Submit the form data to the backend via AJAX
+            $.ajax({
+                url: '/admin/addCoupons',  // Backend endpoint
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function(response) {
+                   
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: response.message,
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        window.location.href = '/admin/coupons'; // Redirect after success
+                    });
+                },
+                error: function(xhr, status, error) {
+                    const response = xhr.responseJSON;
+                    if (response && response.message) {
+                       
+                       document.getElementById("codeError").textContent=response.message
+                    } else {
+                        console.error('Error:', error);
+                        alert('An unknown error occurred.');
+                    }
+                }
+            });
+        }
+            
+    });
+
+        
+    </script>
+    <%- include("../layouts/footer.ejs") %>
+
+

@@ -6,18 +6,29 @@ db();
 const path = require('path');
 const port = process.env.PORT;
 
+
+
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 const userRoute = require('./routes/userRoutes');
 const adminRoute = require('./routes/adminRoutes');
 
 
-
 app.use('/',userRoute);
 app.use('/admin',adminRoute);
 
 
+app.use((req, res, next) => {
+    res.redirect("/404")
+});
 
-app.listen(port,()=>{
-    console.log(`server started on http://localhost:${port}`);
-})
+
+db().then(() => {
+   
+    app.listen(process.env.PORT, () => {
+        console.log(`Server is running on port ${process.env.PORT}`);
+    });
+}).catch(error => {
+    console.error('Failed to connect to the database', error);
+});

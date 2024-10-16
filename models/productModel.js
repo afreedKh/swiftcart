@@ -51,6 +51,10 @@ const productSchema = mongoose.Schema({
         required:true,
         min:0
     },
+    category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
+    brand: { type: mongoose.Schema.Types.ObjectId, ref: 'Brand', required: true },
+
+
     isDeleted:{
         type:Boolean,
         default:false
@@ -68,7 +72,10 @@ const productSchema = mongoose.Schema({
         value:{type:String , required:true}
     }],
     varients:[varientSchema],
-    
+    offer: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Offer'
+      }
    
 
 })

@@ -1,8 +1,5 @@
 
 
-
-
-
  <%- include("../layouts/adminAddProductHeader.ejs") %>
 
 
@@ -10,20 +7,7 @@
 
 
 
-<div class="sidebar">
-   
-    <a href="/admin/dashboard"><img src="/assets/images/logo/logo_black.png" alt="SwiftCart" class="img-flui"></a>
-    <a href="/admin/dashboard">Dashboard</a>
-    <a href="/admin/product">Product</a>
-    <a href="/admin/categories">Categories</a>
-    <a href="/admin/payments">Payments</a>
-    <a href="/admin/brands">Brands</a>
-    <a href="/admin/userManagement">Users</a>
-    <a href="/admin/orders">Orders</a>
-    <a href="/admin/coupon">Coupon</a>
-    <a href="/admin/banner">Banner</a>
-    <a href="/admin/logout">Log Out</a>
-</div>
+
 
 <div class="content">
     <div class="header">
@@ -46,6 +30,34 @@
             </div>
 
             <div class="form-group">
+                <label for="productCategory">Category</label>
+                <select name="productCategory" class="form-control" id="productCategory">
+                    <option value="">Select Category</option>
+                    <% categories.forEach(function(category) { %>
+                        <option value="<%= category._id %>" <%= category._id.equals(product.category) ? 'selected' : '' %> >
+                            <%= category.name %>
+                        </option>
+                    <% }); %>
+                </select>
+                <p class="text-danger" id="productCategoryError"></p>
+            </div>
+            
+
+            <div class="form-group">
+                <label for="productBrand">Brand</label>
+                <select name="productBrand" class="form-control" id="productBrand">
+                    <option value="">Select Brand</option>
+                    <% brands.forEach(function(brand) { %>
+                        <option value="<%= brand._id %>" <%= brand._id.equals(product.brand) ? 'selected' : '' %> >
+                            <%= brand.name %>
+                        </option>
+                    <% }); %>
+                </select>
+                <p class="text-danger" id="productBrandError"></p>
+            </div>
+            
+
+            <div class="form-group">
                 <label for="productDescription">Description</label>
                 <input type="text" name="productDescription" class="form-control" id="productDescription" value="<%= product.description %>">
                 <p id="productDescriptionError" style="color: red;" class="error-message"></p>
@@ -62,7 +74,7 @@
                                 <p class="error-message spec-key-error" style="color: red;"></p>
                                 <input type="text" name="specifications[<%= index %>][value]" class="form-control mt-2" placeholder="Value" value="<%= spec.value %>" >
                                 <p class="error-message spec-value-error" style="color: red;"></p>
-                                <span class="remove-btn">Remove</span>
+                                <button class="remove-btn btn-danger">Remove</button>
                             </div>
                         <% }); %>
                     <% } else { %>
@@ -92,61 +104,41 @@
                                 <input type="number" class="form-control mt-2" placeholder="Stock" name="productVarients[<%= variantIndex %>][stock]" value="<%= variant.stock %>">
                                 <p class="error-message stock-error" style="color: red;"></p>
 
-                                <div class="form-group mt-2">
-                                    <label>Images for Variant <%= variantIndex + 1 %></label>
-                                    <input type="file" name='varients[<%=variantIndex%>][images]' class="form-control-file variant-images" multiple>
-                                    <p class="error-message images-error" style="color: red;"></p>
-                                </div>
-
-
+                               
                                 <div class="image-previews">
-    <% variant.images.forEach((image, imageIndex) => { %>
-        <div class="img-preview-container">
-            <img src="<%= image.url %>" class="img-fluid mb-2" style="max-width: 200px;" data-image-index="<%= imageIndex %>">
-            <input type="file" class="form-control-file variant-image-upload mt-2" name="varients[<%=variantIndex%>][images][<%= imageIndex %>]" data-image-index="<%= imageIndex %>">
-            <input type="hidden" name="varients[<%=variantIndex%>][existingImages][<%= imageIndex %>]" value="<%= image.url %>">
-            <input type="hidden" name="varients[<%=variantIndex%>][imageStatus][<%= imageIndex %>]" value="unchanged">
-            <button type="button" class="btn btn-primary btn-sm replace-image mt-2">Replace</button>
-            <button type="button" class="btn btn-danger btn-sm remove-image mt-2">Remove</button>
-        </div>
-    <% }) %>
-</div>
+                                    <% variant.images.filter(image => image !== null && image !== undefined).forEach((image, imageIndex) => { %>
+                                        <div class="img-preview-container">
+                                            <img src="<%= image.url %>" class="img-fluid mb-2" style="max-width: 200px;" data-image-index="<%= imageIndex %>">
+                                            <input type="file" class="form-control-file variant-image-upload mt-2" name="varients[<%=variantIndex%>][images][<%= imageIndex %>]" data-image-index="<%= imageIndex %>">
+                                            <input type="hidden" name="varients[<%=variantIndex%>][existingImages][<%= imageIndex %>]" value="<%= image.url %>">
+                                            <input type="hidden" name="varients[<%=variantIndex%>][imageStatus][<%= imageIndex %>]" value="unchanged">
+                                            <button type="button" class="btn btn-danger btn-sm mt-2 delete-image" data-image-id="<%= image._id %>">Delete</button>
+                                            <button type="button" class="btn btn-secondary btn-sm crop-image mt-2">Crop</button>
+                                        </div>
+                                    <% }) %>
+                                </div>
+                                
 
                                 <button type="button" class="btn btn-danger mt-2 remove-variant">Remove Variant</button>
                             </div>
                         <% }); %>
                     <% } %>
                 </div>
-                <button type="button" id="addVariant" class="btn btn-secondary mt-2">Add Variant</button>
+                <input type="hidden" id="addVariant" class="btn btn-secondary mt-2"></input>
             </div>
 
             <button type="submit" class="btn btn-primary">Save Changes</button>
         </form>
+        <br>
+       <a href="/admin/product"> <button type="submit" class="btn btn-primary">Go Back</button></a>
     </div>
 </div>
 
 
-<div class="modal fade" id="cropperModal" tabindex="-1"  role="dialog" aria-labelledby="cropperModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" >
-      <div class="modal-content" >
-        <div class="modal-header" >
-          <h5 class="modal-title" id="cropperModalLabel">Crop Image</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body" >
-          <div >
-            <img id="cropperImage" src="" alt="Image to crop" style="max-width: 100%;">
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" id="cropImage">Crop</button>
-        </div>
-      </div>
-    </div>
-  </div>
+
+
+
+
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -175,111 +167,82 @@
             $(this).parent().remove();
         });
     
-        // Add new variant
-        $('#addVariant').click(function() {
-            $('#variantsContainer').append(`
-                <div class="variant-group" data-variant-id="${variantCount}">
-                    <label>Variant ${variantCount + 1}</label>
-                    <input type="text" class="form-control" placeholder="Color" name="varients[${variantCount}][color]">
-                    <input type="text" class="form-control mt-2" placeholder="Color Code" name="varients[${variantCount}][colorCode]">
-                    <input type="number" class="form-control mt-2" placeholder="Stock" name="varients[${variantCount}][stock]">
-    
-                    <div class="form-group mt-2">
-                        <label>Images for Variant ${variantCount + 1}</label>
-                        <input type="file"  class="form-control-file variant-images" multiple>
-                    </div>
-    
-                    <div class="image-previews"></div>
-    
-                    <button type="button" class="btn btn-danger mt-2 remove-variant">Remove Variant</button>
-                </div>
-            `);
-            variantCount++;
-        });
-    
-        $('#variantsContainer').on('click', '.remove-variant', function() {
-            $(this).closest('.variant-group').remove();
-        });
+        
+
+
     
         let cropper;
-    let currentImageElement;
-    let currentFileInput;
+        let currentImageElement;
+        let currentFileInput;
 
-    $('#variantsContainer').on('change', '.variant-image-upload', function(e) {
-        const file = e.target.files[0];
-        currentFileInput = this;
-        const imgElement = $(this).closest('.img-preview-container').find('img');
+        $(document).ready(function() {
+                    $('#variantsContainer').on('change', '.variant-image-upload', function(e) {
+                        const file = e.target.files[0];
+                        const imgElement = $(this).closest('.img-preview-container').find('img');
 
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                currentImageElement = imgElement[0];
-                $('#cropperImage').attr('src', event.target.result);
-                $('#cropperModal').modal('show');
+                        if (file) {
+                            const reader = new FileReader();
+                    reader.onload = function(event) {
+                        imgElement.attr('src', event.target.result);
+                        $(this).closest('.img-preview-container').find('input[name$="[imageStatus]"]').val('changed');
+                    }.bind(this);
 
-                if (cropper) {
-                    cropper.destroy();
+                    reader.readAsDataURL(file);
                 }
-
-                const cropperImage = document.getElementById('cropperImage');
-                cropper = new Cropper(cropperImage, {
-                    aspectRatio: 1,
-                    viewMode: 1,
-                    autoCropArea: 1,
-                    minCropBoxWidth: 200,
-                    minCropBoxHeight: 200,
-                });
-            };
-
-            reader.readAsDataURL(file);
-        }
-    });
-
-
-
-
-
-
-    
-    $('#cropImage').click(function() {
-        if (!cropper) {
-            return;
-        }
-
-        const canvas = cropper.getCroppedCanvas({
-            width: 400,
-            height: 400
+            });
         });
 
-        canvas.toBlob(function(blob) {
-            const url = URL.createObjectURL(blob);
-            $(currentImageElement).attr('src', url);
-
-            // Create a new File object from the blob
-            const croppedFile = new File([blob], "cropped_image.jpg", { type: "image/jpeg" });
-
-            // Create a new FileList containing the cropped file
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(croppedFile);
-
-            // Set the new FileList as the files property of the file input
-            $(currentFileInput)[0].files = dataTransfer.files;
-
-            // Update the hidden input to indicate this image has been changed
-            $(currentFileInput).closest('.img-preview-container').find('input[type="hidden"]').val('changed');
-
-            $('#cropperModal').modal('hide');
-        }, 'image/jpeg');
-    });
 
 
+        $('#variantsContainer').on('click', '.crop-image', function() {
+            currentImageElement = $(this).closest('.img-preview-container').find('img')[0];
+            currentFileInput = $(this).closest('.img-preview-container').find('.variant-image-upload')[0];
+            
+            $('#cropperImage').attr('src', currentImageElement.src);
+            $('#cropperModal').modal('show');
 
-    
-    $('#variantsContainer').on('click', '.remove-image', function() {
-        const container = $(this).closest('.img-preview-container');
-        container.find('input[type="hidden"]').val('removed');
-        container.hide();
-    });
+            if (cropper) {
+                cropper.destroy();
+            }
+
+            cropper = new Cropper($('#cropperImage')[0], {
+                aspectRatio: 1,
+                viewMode: 1,
+                autoCropArea: 1,
+                minCropBoxWidth: 200,
+                minCropBoxHeight: 200,
+            });
+        });
+
+        $('#cropImage').click(function() {
+            if (!cropper) return;
+
+            const canvas = cropper.getCroppedCanvas({
+                width: 400,
+                height: 400
+            });
+
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                $(currentImageElement).attr('src', url);
+
+                const croppedFile = new File([blob], "cropped_image.jpg", { type: "image/jpeg" });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(croppedFile);
+                currentFileInput.files = dataTransfer.files;
+
+                $(currentFileInput).closest('.img-preview-container').find('input[name$="[imageStatus]"]').val('changed');
+
+                $('#cropperModal').modal('hide');
+            }, 'image/jpeg');
+        });
+
+
+        $('#variantsContainer').on('click', '.remove-image', function() {
+            const container = $(this).closest('.img-preview-container');
+            container.find('input[name$="[imageStatus]"]').val('removed');
+            container.hide();
+        });
 
 
     });
@@ -317,21 +280,7 @@
     let specificationCount = document.querySelectorAll('.specification-group').length;
     let variantCount = document.querySelectorAll('.variant-group').length;
 
-    // Add new specification
-    addSpecificationButton.addEventListener('click', function() {
-        const container = document.getElementById('specificationsContainer');
-        const newSpec = document.createElement('div');
-        newSpec.className = 'specification-group';
-        newSpec.innerHTML = `
-            <input type="text" name="specifications[${specificationCount}][key]" class="form-control" placeholder="Key" >
-            <p class="error-message spec-key-error"></p>
-            <input type="text" name="specifications[${specificationCount}][value]" class="form-control mt-2" placeholder="Value" >
-            <p class="error-message spec-value-error"></p>
-            <button type="button" class="btn btn-danger mt-2 remove-btn">Remove Specification</button>
-        `;
-        container.appendChild(newSpec);
-        specificationCount++;
-    });
+   
 
     // Remove specification
     document.getElementById('specificationsContainer').addEventListener('click', function(e) {
@@ -370,6 +319,7 @@
     document.getElementById('variantsContainer').addEventListener('click', function(e) {
         if (e.target.classList.contains('remove-variant')) {
             e.target.closest('.variant-group').remove();
+            variantCount--;
         }
     });
 
@@ -378,6 +328,7 @@
         e.preventDefault();
 
         const formData = new FormData(this);
+        
         const variantGroups = document.querySelectorAll('.variant-group');
         let globalErrors = [];
 
@@ -396,6 +347,18 @@
         if (isNaN(productPrice) || productPrice < 1) {
             globalErrors.push('Product Price must be a number and minimum 1');
             document.getElementById('productPriceError').textContent = 'Product Price must be a number and minimum 1';
+        }
+        
+        const productCategory = formData.get('productCategory');
+        if (!productCategory || productCategory === '') {
+            globalErrors.push('Category is required');
+            document.getElementById('productCategoryError').textContent = 'Category is required';
+        }
+
+        const productBrand = formData.get('productBrand');
+        if (!productBrand || productBrand === '') {
+            globalErrors.push('Brand is required');
+            document.getElementById('productBrandError').textContent = 'Brand is required';
         }
 
         // Validate description
@@ -441,7 +404,7 @@
                 group.querySelector('.color-code-error').textContent = 'Invalid color code format';
             }
 
-            if (isNaN(stock) || stock < 0) {
+            if (isNaN(stock) || stock <=0) {
                 globalErrors.push(`Variant ${index + 1} stock must be a non-negative number`);
                 group.querySelector('.stock-error').textContent = 'Stock must be a non-negative number';
             }
@@ -456,12 +419,15 @@
             document.getElementById('globalErrorMessages').innerHTML = globalErrors.join('<br>');
             return; // Prevent form submission
         }
+        
+        
 
         // If validation passes, submit the form
         try {
             const response = await fetch('/admin/updateProduct/' + productId, {
                 method: 'POST',
                 body: formData
+
             });
 
             const data = await response.json();
@@ -503,39 +469,82 @@
     </script>
     
 
+    <!-- Cropper Modal -->
+<div class="modal fade" id="cropperModal" tabindex="-1" role="dialog" aria-labelledby="cropperModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cropperModalLabel">Crop Image</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <img id="cropperImage" src="" alt="Image to crop" style="max-width: 100%;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="cropImage">Crop</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+ document.addEventListener("DOMContentLoaded", function() {
+    const deleteButtons = document.querySelectorAll(".delete-image");
+
+    deleteButtons.forEach(button => {
+        button.addEventListener("click", function() {
+            const imageId = this.getAttribute("data-image-id");
+
+            // Display SweetAlert confirmation dialog
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // If confirmed, proceed with the deletion
+                    fetch(`/admin/deleteImage/${imageId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            // Remove the image from the page
+                            this.closest(".img-preview-container").remove();
+                            Swal.fire(
+                                'Deleted!',
+                                'Your image has been deleted.',
+                                'success'
+                            );
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                'Failed to delete image.',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            });
+        });
+    });
+});
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+</script>
 
 <%- include("../layouts/footer.ejs") %>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

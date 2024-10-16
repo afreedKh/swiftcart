@@ -1,0 +1,155 @@
+<%- include("../layouts/adminCategoryHeader.ejs") %>
+
+
+
+<div class="content">
+    <div class="header">
+        <h1>Edit Coupon</h1>
+        <a href="/admin/coupons" class="btn btn-secondary mb-3">Back to Coupons</a>
+    </div>
+
+    <div class="form-container">
+        <!-- Removed the form tag and replaced it with input fields -->
+        <div class="form-group">
+            <label for="code">Coupon Code</label>
+            <input type="text" id="code" class="form-control" value="<%= coupon.code %>" oninput="this.value=this.value.toUpperCase()">
+            <div class="error-message" id="codeError"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="discountValue">Discount (Percentage ) <i class="fas fa-percent"></i></label>
+            <input type="number" id="discountValue" class="form-control" step="0.01" value="<%= coupon.discount %>">
+            <div class="error-message" id="discountValueError"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="expiryDate">Expiry Date</label>
+            <input type="date" id="expiryDate" class="form-control" value="<%= coupon.expiryDate.toISOString().split('T')[0] %>">
+            <div class="error-message" id="expiryDateError"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="usageLimit">Usage Limit</label>
+            <input type="number" id="usageLimit" class="form-control" min="1" value="<%= coupon.usageLimit %>">
+            <div class="error-message" id="usageLimitError"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="minPurchaseAmount">Minimum Purchase Amount</label>
+            <input type="number" id="minPurchaseAmount" class="form-control" step="0.01" value="<%= coupon.minPurchaseAmount %>">
+            <div class="error-message" id="minPurchaseAmountError"></div>
+        </div>
+
+        <!-- Submit button -->
+        <button id="updateCouponBtn" class="btn btn-primary">Update Coupon</button>
+    </div>
+    <br>
+        <a href="/admin/coupons"> <button type="submit" class="btn btn-primary">Go Back</button></a>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    document.getElementById('updateCouponBtn').addEventListener('click', async function() {
+        const couponId = '<%= coupon._id %>';
+        const code = document.getElementById('code').value;
+        const discount = document.getElementById('discountValue').value;
+        const expiryDate = document.getElementById('expiryDate').value;
+        const usageLimit = document.getElementById('usageLimit').value;
+        const minPurchaseAmount = document.getElementById('minPurchaseAmount').value;
+
+
+       
+
+        document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+
+        let isValid = true;
+        const couponCodeRegex = /^[A-Z0-9]{8}$/;
+        if (!couponCodeRegex.test(code)) {
+            document.getElementById('codeError').textContent = 'Coupon code must be 8 uppercase alphanumeric characters.';
+            isValid = false;
+        }
+
+        if (isNaN(discount) || discount <= 0) {
+            document.getElementById('discountValueError').textContent = 'Discount value must be a positive number greater than zero.';
+            isValid = false;
+        }else if(discount>100){
+            document.getElementById('discountValueError').textContent = 'Discount value must be a lesser then 100.';
+            isValid = false;
+
+        }
+
+        const currentDate = new Date();
+        const expiry = new Date(expiryDate);
+        if (expiry <= currentDate) {
+            document.getElementById('expiryDateError').textContent = 'Expiry date must be in the future.';
+            isValid = false;
+        }
+
+        if (isNaN(usageLimit) || usageLimit < 1) {
+            document.getElementById('usageLimitError').textContent = 'Usage limit must be at least 1.';
+            isValid = false;
+        }
+
+        if (isNaN(minPurchaseAmount) || minPurchaseAmount < 1||!minPurchaseAmount) {
+            document.getElementById('minPurchaseAmountError').textContent = 'Minimum purchase amount  must be at least 1.';
+            isValid = false;
+        }
+
+        if (!isValid) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/admin/updateCoupons/${couponId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    code,
+                    discount,
+                    expiryDate,
+                    usageLimit,
+                    minPurchaseAmount
+                })
+            });
+
+            if (response.ok) {
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "Coupon updated successfully!",
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    window.location.href = "/admin/coupons";
+                });
+            } else {
+                
+               const errorMessage = await response.json()
+                console.log(errorMessage);
+                
+                
+                document.getElementById("codeError").textContent=errorMessage.message
+               
+                
+                
+            }
+        } catch (error) {
+            console.error("Update failed:", error);
+            Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "An error occurred.",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+    });
+</script>
+
+<%- include("../layouts/footer.ejs") %>

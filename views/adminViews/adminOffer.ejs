@@ -1,0 +1,285 @@
+<%- include("../layouts/adminProductHeader.ejs") %>
+
+<nav class="navbar navbar-expand-lg navbar-light">
+    <a class="navbar-brand" href="">
+        <img src="/assets/images/logo/logo_black.png" alt="SwiftCart" style="width: 120px;">
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" id="sidebarToggle">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/dashboard">Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/admin/product">Products</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link "  href="/admin/categories">Categories</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/admin/brands">Brands</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/userManagement">Users</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/orders">Orders</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/admin/coupons">Coupons</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="/admin/offers">Offers</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/banner">Banner</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" onclick="message(successMessage='Logout Successfully')" href="/admin/logout">Log Out</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="content">
+    <div class="header">
+        <h1>Offers</h1>
+        <form class="search-form" action="/admin/offers" method="GET">
+            <input type="text" name="search" value="<%= search %>" class="form-control" placeholder="Search offers...">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+        <br>
+        <a href="/admin/addOffer" class="btn btn-primary">Add Offer</a>
+    </div>
+
+    <div class="table-responsive mt-4">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>SL NO.</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Discount</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% offers.forEach((offer, index) => { %>
+                    <tr>
+                        <td><%= (page - 1) * limit + index + 1 %></td>
+                        <td><%= offer.name %></td>
+                        <td><%= offer.type.charAt(0).toUpperCase() + offer.type.slice(1) %></td>
+                        <td><%= offer.discount %>%</td>
+                        <td><%= offer.startDate.toLocaleDateString() %></td>
+                        <td><%= offer.endDate.toLocaleDateString() %></td>
+                        <td><%= offer.isActive ? 'Active' : 'Inactive' %></td>
+                        <td>
+                            <a href="/admin/editOffer/<%= offer._id %>" class="btn btn-warning btn-sm">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <% if (offer.isActive) { %>
+                                <button onclick="deactivateOffer('<%= offer._id %>')" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-ban"></i> Deactivate
+                                </button>
+                            <% } else { %>
+                                <button onclick="activateOffer('<%= offer._id %>')" class="btn btn-sm btn-success">
+                                    <i class="fas fa-check"></i> Activate
+                                </button>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination">
+        <% if (page > 1) { %>
+            <a href="/admin/offers?page=<%= page - 1 %>&search=<%= search %>" class="btn btn-primary">Previous</a>
+        <% } %>
+    
+        <% for (let i = 1; i <= totalPages; i++) { %>
+            <a href="/admin/offers?page=<%= i %>&search=<%= search %>" class="btn <%= i === page ? 'btn-primary' : 'btn-secondary' %>"><%= i %></a>
+        <% } %>
+    
+        <% if (page < totalPages) { %>
+            <a href="/admin/offers?page=<%= page + 1 %>&search=<%= search %>" class="btn btn-primary">Next</a>
+        <% } %>
+    </div>
+    
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+<script>
+    function message(successMessage) {
+    if (successMessage) {
+        Swal.fire({
+            position: "center",
+            icon: "success",
+            title: successMessage,
+            showConfirmButton: false,
+            timer: 3000
+        }).then(() => {
+            window.location.href = "/admin";
+        });
+    }
+}
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const successMessage = urlParams.get('success');
+        if (successMessage) {
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: successMessage,
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                window.location.href = "/admin/offers";
+            });
+        }
+    });
+
+    function activateOffer(id) {
+        fetch(`/admin/activateOffer/${id}`, {
+            method: 'PUT',
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                Swal.fire('Success', data.message, 'success').then(() => { window.location.reload() });
+            }
+        })
+        .catch(error => console.error('Error activating offer:', error));
+    }
+
+    function deactivateOffer(id) {
+        fetch(`/admin/deactivateOffer/${id}`, {
+            method: 'DELETE',
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                Swal.fire('Success', data.message, 'success').then(() => { window.location.reload() });
+            }
+        })
+        .catch(error => console.error('Error deactivating offer:', error));
+    }
+</script>
+
+
+<script>
+    function activateOffer(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you want to activate this offer?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, activate it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/admin/activateOffer/${id}`, {
+                    method: 'PUT',
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire('Activated!', data.message, 'success').then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire('Error', data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error activating offer:', error);
+                    Swal.fire('Error', 'An error occurred while activating the offer.', 'error');
+                });
+            }
+        });
+    }
+
+    function deactivateOffer(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you want to deactivate this offer?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, deactivate it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/admin/deactivateOffer/${id}`, {
+                    method: 'DELETE',
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire('Deactivated!', data.message, 'success').then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire('Error', data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deactivating offer:', error);
+                    Swal.fire('Error', 'An error occurred while deactivating the offer.', 'error');
+                });
+            }
+        });
+    }
+</script>
+
+
+<script>
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    const content = document.querySelector('.content');
+
+    sidebarToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('active');
+        if (sidebar.classList.contains('active')) {
+            content.style.marginLeft = '200px';
+        } else {
+            content.style.marginLeft = '0';
+        }
+    });
+
+    // Adjust layout on window resize
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 990) {
+            sidebar.classList.add('active');
+            content.style.marginLeft = '200px';
+        } else {
+            sidebar.classList.remove('active');
+            content.style.marginLeft = '0';
+        }
+    });
+
+    // Initial layout adjustment
+    if (window.innerWidth > 990) {
+        sidebar.classList.add('active');
+        content.style.marginLeft = '200px';
+    }
+</script>
+
+
+<%- include("../layouts/footer.ejs") %>

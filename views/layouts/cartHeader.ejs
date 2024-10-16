@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>HONO - Multi Purpose HTML Template</title>
+    <title>Swift Cart</title>
 
     <!-- ::::::::::::::Favicon icon::::::::::::::-->
     <link rel="shortcut icon" href="assets/images/favicon.ico" type="image/png">
@@ -35,6 +35,55 @@
     <link rel="stylesheet" href="assets/css/vendor/vendor.min.css">
     <link rel="stylesheet" href="assets/css/plugins/plugins.min.css">
     <link rel="stylesheet" href="assets/css/style.min.css">
+
+    <style>
+        .quantity-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: rgb(230, 106, 106);
+    color: white;
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+.quantity-btn:hover {
+    background-color: rgb(37, 35, 35);
+}
+
+.product-variable-quantity {
+    display: flex;
+    align-items: center;
+}
+
+.quantity-input {
+    width: 50px;
+    height: 35px;
+    border: 1px solid #ededed;
+    background-color: transparent;
+    text-align: center;
+    padding: 0;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+.quantity-input:focus {
+    outline: none;
+    border-color: rgb(212, 76, 76);
+}
+
+.quantity-error {
+    margin-top: 5px;
+    font-size: 12px;
+    color: red;
+}
+
+    </style>
 
 </head>
 

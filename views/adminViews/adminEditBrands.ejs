@@ -1,0 +1,25 @@
+<%-include("../layouts/adminEditCategory.ejs") %>
+
+<div class="content">
+    <div class="header">
+        <h1>Edit Brands</h1>
+    </div>
+
+    <form action="/admin/updateBrands/<%= brands._id %>" method="POST">
+        <div class="form-group">
+            <label for="name">Update Brands</label>
+            <input type="text" name="name" value="<%= brands.name %>" class="form-control" id="name" placeholder="Enter brands name">
+            <p class="error-message"><%= locals.invalidName ? locals.invalidName : "" %></p>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Brand</button>
+    </form>
+    <br>
+    <a href="/admin/brands"> <button type="submit" class="btn btn-primary">Go Back</button></a>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+<%-include("../layouts/footer.ejs") %>

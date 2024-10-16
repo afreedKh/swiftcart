@@ -8,6 +8,7 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
 
 
@@ -22,21 +23,39 @@
         .sidebar {
             height: 100vh;
             position: fixed;
-            background-color: #f8f9fa;
-            padding: 10px;
+            background-color: #343a40;
+            padding: 20px 0;
             width: 200px;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
         }
-    
+
+        .sidebar .logo {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #4b545c;
+        }
+
+        .sidebar .logo img {
+            width: 120px;
+        }
+
         .sidebar a {
             display: block;
-            padding: 10px;
-            color: #333;
+            padding: 15px 20px;
+            color: #ced4da;
             text-decoration: none;
+            transition: all 0.3s;
         }
-    
-        .sidebar a:hover {
-            background-color: #e9ecef;
-            border-radius: 5px;
+
+        .sidebar a:hover, .sidebar a.active {
+            background-color: #4b545c;
+            color: #fff;
+        }
+
+        .sidebar a i {
+            margin-right: 10px;
         }
     
         .content {

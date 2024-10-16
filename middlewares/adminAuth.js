@@ -4,7 +4,7 @@ const isLogin = async(req,res,next)=>{
         if(admin){
            next(); 
         }else{
-            res.redirect('/admin/admin');
+            res.redirect('/admin');
         }
     } catch (error) {
         console.log(error.message);

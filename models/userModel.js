@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const addressSchema = require('../models/addressesSchema');
 
-
 const userScema = mongoose.Schema({
     name:{
         type:String,
@@ -13,15 +12,15 @@ const userScema = mongoose.Schema({
     },
     phone:{
         type:String,
-        required:true
+        required:false
     },
     password:{
         type:String,
-        required:true
+        required:false
     },
     confirmPassword:{
         type:String,
-        required:true
+        required:false
     },
     token:{
         type:String,
@@ -40,7 +39,31 @@ const userScema = mongoose.Schema({
         enum:['male','female'],
         
     },
-    addressess:[addressSchema]
+    addressess:[addressSchema],
+    wishlist: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Product',
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
+  }],
+  walletBalance: {
+    type: Number,
+    default: 0
+  },
+  walletTransactions: [{
+    type: {
+      type: String,
+      enum: ['credit', 'debit']
+    },
+    amount: Number,
+    description: String,
+    date: {
+      type: Date,
+      default: Date.now
+    }
+  }]
 })
 
 

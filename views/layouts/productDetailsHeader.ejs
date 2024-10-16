@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>HONO - Multi Purpose HTML Template</title>
+    <title>Swift Cart</title>
 
     <!-- ::::::::::::::Favicon icon::::::::::::::-->
     <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/png">
@@ -36,14 +36,11 @@
     <link rel="stylesheet" href="/assets/css/style.min.css">
     <!-- <link rel="stylesheet" href="/assets/css/style.css"> -->
 <!-- FontAwesome CDN -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
     <style>
-        .actualPrice{
-    font-size: medium;
-    text-decoration: line-through;
-
-    }
+        
     .hidden-element{
         display: none;
     }
@@ -86,6 +83,65 @@
     .modal-footer .btn {
         margin: 0 5px;
     }
+    .quantity-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgb(107, 103, 103);
+    color: white;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    cursor: pointer;
+    margin: 0 10px;
+}
+
+.quantity-btn:hover {
+    background-color: rgb(22, 20, 20);
+}
+
+.product-variable-quantity {
+    display: flex;
+    align-items: center;
+}
+
+.product-variable-quantity input {
+    width: 50px;
+    height: 40px;
+    border: 1px solid #ededed;
+    background-color: transparent;
+    text-align: center;
+    padding: 0;
+    font-size: 16px;
+    border-radius: 5px;
+    margin: 0 10px;
+}
+
+.product-variable-quantity input:focus {
+    outline: none;
+    border-color: rgb(212, 76, 76);
+}
+
+.product-add-to-cart-btn {
+    margin-left: 20px;
+}
+
+.btn-primary {
+    background-color: rgb(76, 133, 212);
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-primary:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
 
 
 

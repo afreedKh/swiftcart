@@ -1,0 +1,256 @@
+<%- include("../layouts/adminCategoryHeader.ejs") %>
+<style>
+    .form-control{
+        width: 50%;
+    }
+</style>
+
+<div class="content">
+    <div class="header">
+        <h1>Add New Offer</h1>
+    </div>
+    
+    <form id="offerForm" action="/admin/addOffer" method="POST">
+        <div class="form-group">
+            <label for="name">Offer Name</label>
+            <input type="text" id="name" name="name" class="form-control" placeholder="Enter Offer Name">
+            <span id="nameError" class="error-message text-danger"></span>
+        </div>
+    
+        <div class="form-group">
+            <label for="discount">Discount (%)</label>
+            <input type="number" id="discount" name="discount" class="form-control" placeholder="Enter Discount Percentage">
+            <span id="discountError" class="error-message text-danger"></span>
+        </div>
+    
+        <div class="form-group">
+            <label for="startDate">Start Date</label>
+            <input type="date" id="startDate" name="startDate" class="form-control">
+            <span id="startDateError" class="error-message text-danger"></span>
+        </div>
+    
+        <div class="form-group">
+            <label for="endDate">End Date</label>
+            <input type="date" id="endDate" name="endDate" class="form-control">
+            <span id="endDateError" class="error-message text-danger"></span>
+        </div>
+    
+        <!-- Offer Type Selection -->
+        <div class="form-group">
+            <label>Offer Type</label><br>
+            <input type="radio" name="type" value="product" id="offerTypeProduct" checked>
+            <label for="offerTypeProduct">Product</label>
+            <input type="radio" name="type" value="category" id="offerTypeCategory">
+            <label for="offerTypeCategory">Category</label>
+            <span id="offerTypeError" class="error-message text-danger"></span>
+        </div>
+    
+        <!-- Product Selection (hidden initially if category is selected) -->
+        <div class="form-group" id="productSection">
+            <label for="product">Select Products</label>
+            <div style="max-height: 200px; overflow-y: auto;">
+                <% products.forEach(function(product) { %>
+                    <div class="form-check">
+                        <input type="checkbox" name="applicableId[]" value="<%= product._id %>" class="form-check-input">
+                        <label class="form-check-label"><%= product.name %></label>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+        <!-- Category Selection (hidden initially if product is selected) -->
+        <div class="form-group" id="categorySection" style="display: none;">
+            <label for="category">Select Categories</label>
+            <div style="max-height: 200px; overflow-y: auto;">
+                <% categories.forEach(function(category) { %>
+                    <div class="form-check">
+                        <input type="checkbox" name="applicableId[]" value="<%= category._id %>" class="form-check-input">
+                        <label class="form-check-label"><%= category.name %></label>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    
+        <span id="applicableIdError" class="error-message text-danger"></span>
+    
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Add Offer</button>
+        </div>
+    </form>
+    <br>
+        <a href="/admin/offers"> <button type="submit" class="btn btn-primary">Go Back</button></a>
+    
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+
+
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('success')) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: urlParams.get('success'),
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location.href = '/admin/offers';
+                });
+            }
+        });
+
+
+</script>
+
+
+
+<script>
+   document.getElementById('offerForm').addEventListener('submit',async function(event) {
+    event.preventDefault();
+    let isValid = true;
+
+    // Clear previous error messages
+    document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+
+    // Validate Offer Name
+    const name = document.querySelector('input[name="name"]').value.trim();
+    
+    const offerName = document.querySelector('input[name="name"]').value.trim();
+    const offerNameRegex = /^[A-Za-z0-9][A-Za-z0-9 ]{1,48}[A-Za-z0-9]$/;
+
+    if (!offerName || !offerNameRegex.test(offerName)) {
+        document.getElementById('nameError').textContent = 'Offer name must be between 3 to 50 characters.';
+        isValid = false;
+    } else {
+        document.getElementById('nameError').textContent = ''; // Clear error message if valid
+    }
+
+    // Validate Discount Value
+    const discountValue = document.querySelector('input[name="discount"]').value;
+    if (!discountValue) {
+        document.getElementById('discountError').textContent = 'Discount value is required.';
+        isValid = false;
+    } else if (discountValue <= 0) {
+        document.getElementById('discountError').textContent = 'Discount value must be greater than 0.';
+        isValid = false;
+    }
+
+    // Validate Start Date
+    const startDate = document.querySelector('input[name="startDate"]').value;
+    const currentDate = new Date();
+
+    // Resetting currentDate time to midnight (00:00:00)
+    currentDate.setHours(0, 0, 0, 0);
+
+    // Parsing the startDate input and setting its time to midnight
+    const selectedDate = new Date(startDate);
+    selectedDate.setHours(0, 0, 0, 0);
+
+    if (!startDate) {
+        document.getElementById('startDateError').textContent = 'Start date is required.';
+        isValid = false;
+    } else if (selectedDate < currentDate) {
+        document.getElementById('startDateError').textContent = 'Start date must be today or a future date.';
+        isValid = false;
+    } else {
+        document.getElementById('startDateError').textContent = ''; // Clear any existing error
+    }
+
+
+    // Validate End Date
+    const endDate = document.querySelector('input[name="endDate"]').value;
+    if (!endDate) {
+        document.getElementById('endDateError').textContent = 'End date is required.';
+        isValid = false;
+    } else if (new Date(endDate) <= new Date(startDate)) {
+        document.getElementById('endDateError').textContent = 'End date must be after the start date.';
+        isValid = false;
+    }
+
+    // Validate Offer Type
+    const selectedOfferType = document.querySelector('input[name="type"]:checked').value;
+
+    if (selectedOfferType === 'product') {
+        // Validate that at least one product is selected
+        const selectedProducts = document.querySelectorAll('input[name="applicableId[]"]:checked');
+        if (selectedProducts.length === 0) {
+            document.getElementById('applicableIdError').textContent = 'Please select at least one product.';
+            isValid = false;
+        }
+    } else if (selectedOfferType === 'category') {
+        // Validate that at least one category is selected
+        const selectedCategories = document.querySelectorAll('input[name="applicableId[]"]:checked');
+        if (selectedCategories.length === 0) {
+            document.getElementById('applicableIdError').textContent = 'Please select at least one category.';
+            isValid = false;
+        }
+    }
+
+
+    if(isValid){
+        const formData ={
+            name:document.getElementById("name").value.trim(),
+            type: document.querySelector('input[name="type"]:checked').value,
+            discount:document.getElementById("discount").value,
+            startDate:document.getElementById("startDate").value,
+            endDate:document.getElementById("endDate").value,
+            applicableId: Array.from(document.querySelectorAll('input[name="applicableId[]"]:checked')).map(el => el.value)
+
+        }
+        
+        console.log(formData);
+        
+        try {
+            const response = await fetch('/admin/addOffer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                // Redirect or handle success
+                window.location.href = '/admin/offers?success=Offer Added Successfully';
+            } else {
+              
+                
+                const errorData = await response.json();
+              
+                document.getElementById('nameError').textContent = errorData.message;
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error.message);
+        }
+    }
+
+    
+
+
+
+    // Prevent form submission if validation fails
+    
+});
+
+// Toggle between product and category section based on offer type selection
+document.querySelectorAll('input[name="type"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        if (this.value === 'product') {
+            document.getElementById('productSection').style.display = 'block';
+            document.getElementById('categorySection').style.display = 'none';
+        } else if (this.value === 'category') {
+            document.getElementById('productSection').style.display = 'none';
+            document.getElementById('categorySection').style.display = 'block';
+        }
+    });
+});
+
+
+</script>
+
+
+
+
+<%- include("../layouts/footer.ejs") %>

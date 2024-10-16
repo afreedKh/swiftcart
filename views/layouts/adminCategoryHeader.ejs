@@ -7,37 +7,55 @@
     <title>SwiftCart Category Page</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f4f4f4; /* Added a background color for better contrast */
         }
 
         .sidebar {
             height: 100vh;
-            background-color: #f8f9fa;
-            padding: 10px;
             position: fixed;
+            background-color: #343a40;
+            padding: 20px 0;
             width: 200px;
             top: 0;
             left: 0;
-            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar .logo {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #4b545c;
+        }
+
+        .sidebar .logo img {
+            width: 120px;
         }
 
         .sidebar a {
             display: block;
-            padding: 10px;
-            color: #333;
+            padding: 15px 20px;
+            color: #ced4da;
             text-decoration: none;
+            transition: all 0.3s;
         }
 
-        .sidebar a:hover {
-            background-color: #e9ecef;
-            border-radius: 5px;
+        .sidebar a:hover, .sidebar a.active {
+            background-color: #4b545c;
+            color: #fff;
         }
+
+        .sidebar a i {
+            margin-right: 10px;
+        }
+    
 
         .content {
-            margin-left: 200px;
+            margin-left: 220px; /* Adjusted to match the new sidebar width */
             padding: 20px;
         }
 
@@ -45,13 +63,15 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 20px; /* Added space below the header */
         }
 
-        .img-flui{
+        .img-flui {
             width: 130px;
         }
 
-        @media (max-width: 768px) {
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
             .sidebar {
                 width: 100%;
                 height: auto;
@@ -72,7 +92,22 @@
             .header h1 {
                 margin-bottom: 10px;
             }
-        }
+        }.search-form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-grow: 1;
+        margin: 0 20px;
+    }
+
+    .search-form input {
+        margin-right: 10px;
+        flex: 1;
+    }
+
+    .search-form button {
+        flex-shrink: 0;
+    }              
     </style>
 </head>
 

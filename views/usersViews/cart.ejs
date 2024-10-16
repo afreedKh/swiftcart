@@ -1,4 +1,140 @@
 <%-include("../layouts/cartHeader.ejs")%>
+
+<style>
+    @media (max-width: 991px) {
+        #mobile-menu-offcanvas {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100%;
+            background-color: #fff;
+            transition: right 0.3s ease-in-out;
+            z-index: 9999;
+        }
+    
+        #mobile-menu-offcanvas.offcanvas-open {
+            right: 0;
+        }
+    
+        .offcanvas-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 9998;
+        }
+    
+        .offcanvas-open + .offcanvas-overlay {
+            display: block;
+        }
+    }
+    </style>
+
+
+
+
+    <style>
+        /* Base styles */
+.cart-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table_desc {
+  width: 100%;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 768px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  tr {
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+  }
+
+  td {
+    border: none;
+    position: relative;
+    padding-left: 50%;
+  }
+
+  td:before {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    content: attr(data-label);
+    font-weight: bold;
+  }
+
+  .product_remove, .product_thumb {
+    text-align: center;
+    padding-left: 10px;
+  }
+
+  .product_thumb img {
+    max-width: 100px;
+    height: auto;
+  }
+
+  .product-variable-quantity {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .quantity-input {
+    width: 50px;
+    text-align: center;
+  }
+
+  .quantity-btn {
+    padding: 5px 10px;
+    background-color: #1b0606;
+    border: 1px solid #ddd;
+    cursor: pointer;
+  }
+  .table-responsive table tbody tr td {
+    border-right: 1px solid #ededed;
+    font-weight: 500;
+    text-transform: capitalize;
+    font-size: 17px;
+    text-align: center;
+    min-width: 150px;
+}
+}
+    </style>
+    
+
+
+
+
     <!-- Start Header Area -->
     <header class="header-section d-none d-xl-block">
         <div class="header-wrapper">
@@ -9,7 +145,7 @@
                             <!-- Start Header Logo -->
                             <div class="header-logo">
                                 <div class="logo">
-                                    <a href="index.html"><img src="assets/images/logo/logo_black.png" alt=""></a>
+                                    <a href="/home"><img src="assets/images/logo/logo_black.png" alt=""></a>
                                 </div>
                             </div>
                             <!-- End Header Logo -->
@@ -19,127 +155,20 @@
                                 <nav>
                                     <ul>
                                         <li class="has-dropdown">
-                                            <a class="active main-menu-link" href="index.html">Home <i
-                                                    class="fa fa-angle-down"></i></a>
-                                            <!-- Sub Menu -->
-                                            <ul class="sub-menu">
-                                                <li><a href="index.html">Home 1</a></li>
-                                                <li><a href="index-2.html">Home 2</a></li>
-                                                <li><a href="index-3.html">Home 3</a></li>
-                                                <li><a href="index-4.html">Home 4</a></li>
-                                            </ul>
+                                            <a class="active main-menu-link" href="/home">Home </a>
+                                           
                                         </li>
                                         <li class="has-dropdown has-megaitem">
-                                            <a href="product-details-default.html">Shop <i
-                                                    class="fa fa-angle-down"></i></a>
+                                            <a href="/productList">Shop</a>
                                             <!-- Mega Menu -->
-                                            <div class="mega-menu">
-                                                <ul class="mega-menu-inner">
-                                                    <!-- Mega Menu Sub Link -->
-                                                    <li class="mega-menu-item">
-                                                        <a href="#" class="mega-menu-item-title">Shop Layouts</a>
-                                                        <ul class="mega-menu-sub">
-                                                            <li><a href="shop-grid-sidebar-left.html">Grid Left
-                                                                    Sidebar</a></li>
-                                                            <li><a href="shop-grid-sidebar-right.html">Grid Right
-                                                                    Sidebar</a></li>
-                                                            <li><a href="shop-full-width.html">Full Width</a></li>
-                                                            <li><a href="shop-list-sidebar-left.html">List Left
-                                                                    Sidebar</a></li>
-                                                            <li><a href="shop-list-sidebar-right.html">List Right
-                                                                    Sidebar</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <!-- Mega Menu Sub Link -->
-                                                    <li class="mega-menu-item">
-                                                        <a href="#" class="mega-menu-item-title">Other Pages</a>
-                                                        <ul class="mega-menu-sub">
-                                                            <li><a href="cart.html">Cart</a></li>
-                                                            <li><a href="empty-cart.html">Empty Cart</a></li>
-                                                            <li><a href="wishlist.html">Wishlist</a></li>
-                                                            <li><a href="compare.html">Compare</a></li>
-                                                            <li><a href="checkout.html">Checkout</a></li>
-                                                            <li><a href="login.html">Login</a></li>
-                                                            <li><a href="my-account.html">My Account</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <!-- Mega Menu Sub Link -->
-                                                    <li class="mega-menu-item">
-                                                        <a href="#" class="mega-menu-item-title">Product Types</a>
-                                                        <ul class="mega-menu-sub">
-                                                            <li><a href="product-details-default.html">Product
-                                                                    Default</a></li>
-                                                            <li><a href="product-details-variable.html">Product
-                                                                    Variable</a></li>
-                                                            <li><a href="product-details-affiliate.html">Product
-                                                                    Referral</a></li>
-                                                            <li><a href="product-details-group.html">Product Group</a>
-                                                            </li>
-                                                            <li><a href="product-details-single-slide.html">Product
-                                                                    Slider</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <!-- Mega Menu Sub Link -->
-                                                    <li class="mega-menu-item">
-                                                        <a href="#" class="mega-menu-item-title">Product Types</a>
-                                                        <ul class="mega-menu-sub">
-                                                            <li><a href="product-details-tab-left.html">Product Tab
-                                                                    Left</a></li>
-                                                            <li><a href="product-details-tab-right.html">Product Tab
-                                                                    Right</a></li>
-                                                            <li><a href="product-details-gallery-left.html">Product
-                                                                    Gallery Left</a></li>
-                                                            <li><a href="product-details-gallery-right.html">Product
-                                                                    Gallery Right</a></li>
-                                                            <li><a href="product-details-sticky-left.html">Product
-                                                                    Sticky Left</a></li>
-                                                            <li><a href="product-details-sticky-right.html">Product
-                                                                    Sticky right</a></li>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                                <div class="menu-banner">
-                                                    <a href="#" class="menu-banner-link">
-                                                        <img class="menu-banner-img"
-                                                            src="assets/images/banner/menu-banner.jpg" alt="">
-                                                    </a>
-                                                </div>
-                                            </div>
+                                            
                                         </li>
-                                        <li class="has-dropdown">
-                                            <a href="blog-single-sidebar-left.html">Blog <i
-                                                    class="fa fa-angle-down"></i></a>
-                                            <!-- Sub Menu -->
-                                            <ul class="sub-menu">
-                                                <li><a href="blog-grid-sidebar-left.html">Blog Grid Sidebar left</a>
-                                                </li>
-                                                <li><a href="blog-grid-sidebar-right.html">Blog Grid Sidebar Right</a>
-                                                </li>
-                                                <li><a href="blog-full-width.html">Blog Full Width</a></li>
-                                                <li><a href="blog-list-sidebar-left.html">Blog List Sidebar Left</a>
-                                                </li>
-                                                <li><a href="blog-list-sidebar-right.html">Blog List Sidebar Right</a>
-                                                </li>
-                                                <li><a href="blog-single-sidebar-left.html">Blog Single Sidebar left</a>
-                                                </li>
-                                                <li><a href="blog-single-sidebar-right.html">Blog Single Sidebar
-                                                        Right</a></li>
-                                            </ul>
-                                        </li>
-                                        <li class="has-dropdown">
-                                            <a href="#">Pages <i class="fa fa-angle-down"></i></a>
-                                            <!-- Sub Menu -->
-                                            <ul class="sub-menu">
-                                                <li><a href="faq.html">Frequently Questions</a></li>
-                                                <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                                                <li><a href="404.html">404 Page</a></li>
-                                            </ul>
+                                        
+                                        <li>
+                                            <a href="/about">About Us</a>
                                         </li>
                                         <li>
-                                            <a href="about-us.html">About Us</a>
-                                        </li>
-                                        <li>
-                                            <a href="contact-us.html">Contact Us</a>
+                                            <a href="/contact">Contact Us</a>
                                         </li>
                                     </ul>
                                 </nav>
@@ -149,13 +178,13 @@
                             <!-- Start Header Action Link -->
                             <ul class="header-action-link action-color--black action-hover-color--golden">
                                 <li>
-                                    <a href="#offcanvas-wishlish" class="offcanvas-toggle">
+                                    <a href="/wishlist" class="offcanvas-toggle">
                                         <i class="icon-heart"></i>
-                                        <span class="item-count">3</span>
+                                        <span class="item-count"><%=wishlistCount%></span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#offcanvas-add-cart" class="offcanvas-toggle">
+                                    <a href="/cart" class="offcanvas-toggle">
                                         <i class="icon-bag"></i>
                                         <span class="item-count"><%=cartCount%></span>
                                     </a>
@@ -165,11 +194,7 @@
                                         <i class="icon-magnifier"></i>
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="#offcanvas-about" class="offacnvas offside-about offcanvas-toggle">
-                                        <i class="icon-menu"></i>
-                                    </a>
-                                </li>
+                               
                             </ul>
                             <!-- End Header Action Link -->
                         </div>
@@ -189,7 +214,7 @@
                     <div class="mobile-header-left">
                         <ul class="mobile-menu-logo">
                             <li>
-                                <a href="index.html">
+                                <a href="/home">
                                     <div class="logo">
                                         <img src="assets/images/logo/logo_black.png" alt="">
                                     </div>
@@ -208,15 +233,15 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="#offcanvas-wishlish" class="offcanvas-toggle">
+                                <a href="/wishlist" class="offcanvas-toggle">
                                     <i class="icon-heart"></i>
-                                    <span class="item-count">3</span>
+                                    <span class="item-count"><%=wishlistCount%></span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#offcanvas-add-cart" class="offcanvas-toggle">
+                                <a href="/cart" class="offcanvas-toggle">
                                     <i class="icon-bag"></i>
-                                    <span class="item-count">3</span>
+                                    <span class="item-count"><%=cartCount%></span>
                                 </a>
                             </li>
                             <li>
@@ -246,101 +271,21 @@
                 <!-- Start Mobile Menu Nav -->
                 <div class="offcanvas-menu">
                     <ul>
-                        <li>
-                            <a href="#"><span>Home</span></a>
-                            <ul class="mobile-sub-menu">
-                                <li><a href="index.html">Home 1</a></li>
-                                <li><a href="index-2.html">Home 2</a></li>
-                                <li><a href="index-3.html">Home 3</a></li>
-                                <li><a href="index-4.html">Home 4</a></li>
-                            </ul>
+                        <li class="has-dropdown">
+                            <a class="active main-menu-link" href="/home">Home <i
+                                    ></i></a>
+                        </li>
+                        <li class="has-dropdown has-megaitem">
+                            <a href="/productList">Shop</a>
+                            <!-- Mega Menu -->
+                            
+                        </li>
+                        <li class="">
+                            <a href="/about">ABOUT </a>
                         </li>
                         <li>
-                            <a href="#"><span>Shop</span></a>
-                            <ul class="mobile-sub-menu">
-                                <li>
-                                    <a href="#">Shop Layout</a>
-                                    <ul class="mobile-sub-menu">
-                                        <li><a href="shop-grid-sidebar-left.html">Grid Left Sidebar</a></li>
-                                        <li><a href="shop-grid-sidebar-right.html">Grid Right Sidebar</a></li>
-                                        <li><a href="shop-full-width.html">Full Width</a></li>
-                                        <li><a href="shop-list-sidebar-left.html">List Left Sidebar</a></li>
-                                        <li><a href="shop-list-sidebar-right.html">List Right Sidebar</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                            <ul class="mobile-sub-menu">
-                                <li>
-                                    <a href="#">Shop Pages</a>
-                                    <ul class="mobile-sub-menu">
-                                        <li><a href="cart.html">Cart</a></li>
-                                        <li><a href="empty-cart.html">Empty Cart</a></li>
-                                        <li><a href="wishlist.html">Wishlist</a></li>
-                                        <li><a href="compare.html">Compare</a></li>
-                                        <li><a href="checkout.html">Checkout</a></li>
-                                        <li><a href="login.html">Login</a></li>
-                                        <li><a href="my-account.html">My Account</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                            <ul class="mobile-sub-menu">
-                                <li>
-                                    <a href="#">Product Single</a>
-                                    <ul class="mobile-sub-menu">
-                                        <li><a href="product-details-default.html">Product Default</a></li>
-                                        <li><a href="product-details-variable.html">Product Variable</a></li>
-                                        <li><a href="product-details-affiliate.html">Product Referral</a></li>
-                                        <li><a href="product-details-group.html">Product Group</a></li>
-                                        <li><a href="product-details-single-slide.html">Product Slider</a></li>
-                                        <li><a href="product-details-tab-left.html">Product Tab Left</a></li>
-                                        <li><a href="product-details-tab-right.html">Product Tab Right</a></li>
-                                        <li><a href="product-details-gallery-left.html">Product Gallery Left</a></li>
-                                        <li><a href="product-details-gallery-right.html">Product Gallery Right</a></li>
-                                        <li><a href="product-details-sticky-left.html">Product Sticky Left</a></li>
-                                        <li><a href="product-details-sticky-right.html">Product Sticky right</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
+                            <a href="/contact">Contact Us</a>
                         </li>
-                        <li>
-                            <a href="#"><span>Blogs</span></a>
-                            <ul class="mobile-sub-menu">
-                                <li>
-                                    <a href="#">Blog Grid</a>
-                                    <ul class="mobile-sub-menu">
-                                        <li><a href="blog-grid-sidebar-left.html">Blog Grid Sidebar left</a></li>
-                                        <li><a href="blog-grid-sidebar-right.html">Blog Grid Sidebar Right</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="blog-full-width.html">Blog Full Width</a>
-                                </li>
-                                <li>
-                                    <a href="#">Blog List</a>
-                                    <ul class="mobile-sub-menu">
-                                        <li><a href="blog-list-sidebar-left.html">Blog List Sidebar left</a></li>
-                                        <li><a href="blog-list-sidebar-right.html">Blog List Sidebar Right</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="#">Blog Single</a>
-                                    <ul class="mobile-sub-menu">
-                                        <li><a href="blog-single-sidebar-left.html">Blog Single Sidebar left</a></li>
-                                        <li><a href="blog-single-sidebar-right.html">Blog Single Sidebar Right</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#"><span>Pages</span></a>
-                            <ul class="mobile-sub-menu">
-                                <li><a href="faq.html">Frequently Questions</a></li>
-                                <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                                <li><a href="404.html">404 Page</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="about-us.html">About Us</a></li>
-                        <li><a href="contact-us.html">Contact Us</a></li>
                     </ul>
                 </div> <!-- End Mobile Menu Nav -->
             </div> <!-- End Mobile Menu -->
@@ -348,27 +293,12 @@
             <!-- Start Mobile contact Info -->
             <div class="mobile-contact-info">
                 <div class="logo">
-                    <a href="index.html"><img src="assets/images/logo/logo_white.png" alt=""></a>
+                    <a href="/home"><img src="assets/images/logo/logo_white.png" alt=""></a>
                 </div>
 
-                <address class="address">
-                    <span>Address: Your address goes here.</span>
-                    <span>Call Us: 0123456789, 0123456789</span>
-                    <span>Email: demo@example.com</span>
-                </address>
+              
 
-                <ul class="social-link">
-                    <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                    <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                    <li><a href="#"><i class="fa fa-instagram"></i></a></li>
-                    <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-                </ul>
-
-                <ul class="user-link">
-                    <li><a href="wishlist.html">Wishlist</a></li>
-                    <li><a href="cart.html">Cart</a></li>
-                    <li><a href="checkout.html">Checkout</a></li>
-                </ul>
+               
             </div>
             <!-- End Mobile contact Info -->
 
@@ -564,9 +494,14 @@
     <!-- Start Offcanvas Search Bar Section -->
     <div id="search" class="search-modal">
         <button type="button" class="close">×</button>
-        <form>
-            <input type="search" placeholder="type keyword(s) here" />
-            <button type="submit" class="btn btn-lg btn-golden">Search</button>
+        <form action="/productList" method="GET" class="mb-4">
+            <div class="input-group">
+                <input type="text" name="search"  class="form-control" placeholder="Search products names ...">
+               
+                    <input type="hidden" name="category">
+              
+                <button style="height: 56px;" type="submit" class="btn btn-primary">Search</button>
+            </div>
         </form>
     </div>
     <!-- End Offcanvas Search Bar Section -->
@@ -625,14 +560,18 @@
                                                 <% 
                                                     const variant = item.productId.varients.find(v => v._id.toString() === item.varientId.toString());
                                                     const stock = variant ? variant.stock : 0; 
+                                                    console.log("Rendering item:", item.productId.name);
+                                                    console.log("Item price:", item.price);
+                                                    console.log("Product price:", item.productId.price);
+                                                    console.log("Offer:", item.productId.offer);
                                                 %>
                                                 <tr>
-                                                    <td class="product_remove">
+                                                    <td class="product_remove" >
                                                         <a href="/cartDelete/<%= item._id %>" data-product-id="<%= item.productId._id %>" data-variant-id="<%= item.varientId %>" class="remove-item">
                                                             <i class="fa fa-trash-o"></i>
                                                         </a>
                                                     </td>
-                                                    <td class="product_thumb">
+                                                    <td class="product_thumb"  style="margin-left: 103px;">
                                                         <% if (variant && variant.images && variant.images.length > 0) { %>
                                                             <a href="product-details-default.html">
                                                                 <img src="<%= variant.images[0].url %>" alt="<%= variant.images[0].altText || 'Product Image' %>">
@@ -641,20 +580,25 @@
                                                             <img src="/path/to/default-image.jpg" alt="No image available">
                                                         <% } %>
                                                     </td>
-                                                    <td class="product_name">
+                                                    <td class="product_name" >
                                                         <a href="product-details-default.html"><%= item.productId.name %></a>
                                                     </td>
-                                                    <td class="product-price" data-price="<%= (item.productId.price * (1 - 30 / 100)).toFixed(2) %>">
-                                                        Rs. <%= (item.productId.price * (1 - 30 / 100)).toFixed(2) %>
-                                                    </td>
-                                                    <td class="product_quantity">
-                                                        <label>Quantity</label>
-                                                        <input id="quantityInput-<%= item._id %>" data-item-id="<%= item._id %>" class="quantity-input" min="1" max="5" data-stock="<%= stock %>" value="<%= item.quantity %>" type="number">
+                                                    <td class="product-price "data-label="Price" data-price="<%= item.price.toFixed(2) %>">
+                                                        Rs. <%= item.price.toFixed(2) %>
+                                                      </td>
+                                                      <input type="hidden" name="items[<%= item._id %>][price]" value="<%= item.price.toFixed(2) %>">
+                                                    <td class="product_quantity" data-label="Quantity">
+                                                        
+                                                        <div class="product-variable-quantity">
+                                                            <button class="quantity-btn" type="button" onclick="decreaseQuantity('<%= item._id %>')">-</button>
+                                                            <input id="quantityInput-<%= item._id %>" data-item-id="<%= item._id %>" class="quantity-input" min="1" max="5" data-stock="<%= stock %>" value="<%= item.quantity %>" type="number">
+                                                            <button class="quantity-btn" type="button" onclick="increaseQuantity('<%= item._id %>')">+</button>
+                                                        </div>
                                                         <p id="quantityError-<%= item._id %>" class="quantity-error" style="color: red;"></p>
                                                     </td>
-                                                    <td class="product_total" id="totalPrice-<%= item._id %>">
-                                                        Rs. <%= (item.quantity * (item.productId.price * (1 - 30 / 100))).toFixed(2) %>
-                                                    </td>
+                                                    <td class="product_total" data-label="Total" id="totalPrice-<%= item._id %>">
+                                                        Rs. <%= (item.quantity * item.price).toFixed(2) %>
+                                                      </td>
                                                 </tr>
                                                 <input type="hidden" name="items[<%= item._id %>][productId]" value="<%= item.productId._id %>">
                                                 <input type="hidden" name="items[<%= item._id %>][varientId]" value="<%= item.varientId %>">
@@ -1133,8 +1077,56 @@ function updateSubtotal() {
 }
 
 
+function updateItemTotal(itemId, quantity, price) {
+    const totalElement = document.getElementById(`totalPrice-${itemId}`);
+    const newTotal = (quantity * price).toFixed(2);
+    totalElement.textContent = `Rs. ${newTotal}`;
 
+    // Update the hidden input value
+    const hiddenQuantityInput = document.getElementById(`hiddenQuantity-${itemId}`);
+    hiddenQuantityInput.value = quantity;
 
+    // Update the subtotal for the cart
+    updateSubtotal();
+}
+
+function decreaseQuantity(itemId) {
+    const input = document.getElementById('quantityInput-' + itemId);
+    const value = parseInt(input.value);
+    const priceElement = input.closest('tr').querySelector('.product-price');
+    const price = parseFloat(priceElement.getAttribute('data-price'));
+    const stock = parseInt(input.getAttribute('data-stock'));
+    const maxQuantity = parseInt(input.getAttribute('max'));
+    const errorElement = document.getElementById(`quantityError-${itemId}`);
+
+    if (value > 1) {
+        input.value = value - 1;
+        errorElement.textContent = ''; // Clear error message
+        updateItemTotal(itemId, input.value, price);
+    }
+}
+
+function increaseQuantity(itemId) {
+    const input = document.getElementById('quantityInput-' + itemId);
+    const value = parseInt(input.value);
+    const priceElement = input.closest('tr').querySelector('.product-price');
+    const price = parseFloat(priceElement.getAttribute('data-price'));
+    const stock = parseInt(input.getAttribute('data-stock'));
+    const maxQuantity = parseInt(input.getAttribute('max'));
+    const errorElement = document.getElementById(`quantityError-${itemId}`);
+
+    if (value < maxQuantity && value < stock) {
+        input.value = value + 1;
+        errorElement.textContent = ''; // Clear error message
+        updateItemTotal(itemId, input.value, price);
+    } else if (value >= maxQuantity) {
+        errorElement.textContent = `You can only add a maximum of ${maxQuantity} units of this item.`;
+    } else if (value >= stock) {
+        errorElement.textContent = `Only ${stock} units are available in stock.`;
+    }
+}
+
+// Event listener for direct input changes
 document.querySelectorAll('.quantity-input').forEach(input => {
     input.addEventListener('change', function () {
         const quantity = parseInt(this.value);
@@ -1143,9 +1135,7 @@ document.querySelectorAll('.quantity-input').forEach(input => {
         const itemId = this.getAttribute('data-item-id');
         const priceElement = this.closest('tr').querySelector('.product-price');
         const price = parseFloat(priceElement.getAttribute('data-price'));
-        const totalElement = document.getElementById(`totalPrice-${itemId}`);
         const errorElement = document.getElementById(`quantityError-${itemId}`);
-        const hiddenQuantityInput = document.getElementById(`hiddenQuantity-${itemId}`); // Get the hidden input field
 
         if (quantity > maxQuantity) {
             this.value = maxQuantity;
@@ -1156,18 +1146,11 @@ document.querySelectorAll('.quantity-input').forEach(input => {
             errorElement.textContent = `Only ${stock} units are available in stock.`;
             return;
         } else {
-            errorElement.textContent = '';
+            errorElement.textContent = ''; // Clear error message
         }
 
         // Update the total price for this item
-        const newTotal = (this.value * price).toFixed(2);
-        totalElement.textContent = `Rs. ${newTotal}`;
-
-        // Update the hidden input value to the new quantity
-        hiddenQuantityInput.value = this.value;
-
-        // Update the subtotal for the cart
-        updateSubtotal();
+        updateItemTotal(itemId, this.value, price);
     });
 });
 
@@ -1175,15 +1158,37 @@ document.querySelectorAll('.quantity-input').forEach(input => {
 updateSubtotal();
 
 
-
-updateSubtotal();
-
-
-
     
+
 
 </script>
+
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var menuToggle = document.querySelector('a[href="#mobile-menu-offcanvas"]');
+        var mobileMenu = document.getElementById('mobile-menu-offcanvas');
+        var closeButton = mobileMenu.querySelector('.offcanvas-close');
     
+        menuToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            mobileMenu.classList.add('offcanvas-open');
+        });
+    
+        closeButton.addEventListener('click', function() {
+            mobileMenu.classList.remove('offcanvas-open');
+        });
+    
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!mobileMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+                mobileMenu.classList.remove('offcanvas-open');
+            }
+        });
+    });
+    </script>
 
 
 <%-include("../layouts/footer.ejs")%>

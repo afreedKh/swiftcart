@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details - SwiftCart Admin</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .card {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, .1);
+            margin-bottom: 20px;
+        }
+
+        .item-card {
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .item-card img {
+            max-width: 100px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .item-details {
+            margin: 10px 0;
+        }
+
+        /* To ensure the overall structure remains clean */
+        .items-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .price-list {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .price-list h3 {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Order Details</h1>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 class="mb-3">Shipping Address</h2>
+                <p><strong>Name:</strong> <%= order.shippingAddress.name %></p>
+                <p><strong>Address:</strong> <%= order.shippingAddress.locality %>,<br> <%= order.shippingAddress.address %>, <br><%= order.shippingAddress.city %>,<br> <%= order.shippingAddress.state %>,<br><%= order.shippingAddress.pincode %></p>
+                <p><strong>Country:</strong> India</p>
+            </div>
+        </div>
+
+        <h2 class="mb-3">Items Ordered</h2>
+        <div class="items-container">
+            <% order.itemsOrdered.forEach(item => { %>
+                <div class="item-card">
+                    <div class="item-details">
+                        <h5><%= item.productId ? item.productId.name : 'Unknown Product' %></h5>
+                        <p><strong>Color:</strong> <%= item.varient && item.varient.color ? item.varient.color.color : 'No color specified' %></p>
+                        <p><strong>Quantity:</strong> <%= item.quantity %></p>
+                        <p><strong>Price:</strong> ₹<%= item.price.toFixed(2) %></p>
+                        <p><strong>Subtotal:</strong> ₹<%= (item.price * item.quantity).toFixed(2) %></p>
+                    </div>
+                    <div>
+                        <% if (item.varient && item.varient.images && item.varient.images.length > 0) { %>
+                            <img src="<%= item.varient.images[0].url %>" alt="<%= item.varient.images[0].altText %>" class="img-thumbnail">
+                        <% } else { %>
+                            <span>No variant image</span>
+                        <% } %>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+
+        <!-- Price List Section -->
+        <div class="price-list">
+            <h3>Price List</h3>
+            <ul class="list-unstyled">
+                <li><strong>MRP:</strong> ₹<%= order.actualMrp.toFixed(2) %></li>
+                <% if (order.offerDiscount) { %>
+                    <li><strong>Offer Discount:</strong> -₹<%= order.offerDiscount.toFixed(2) %></li>
+                <% } %>
+                <li><strong>Subtotal:</strong> ₹<%= order.subtotal.toFixed(2) %></li>
+                <% if (order.couponDiscount) { %>
+                    <li><strong>Coupon Discount:</strong> -₹<%= order.couponDiscount.toFixed(2) %></li>
+                <% } %>
+                <li><strong>Shipping Charge:</strong>
+                    <% if (order.totalAmount > 1000) { %>
+                        Free Delivery
+                    <% } else { %>
+                        ₹100.00
+                    <% } %>
+                </li>
+                <li><strong>Total:</strong> ₹<%= order.totalAmount.toFixed(2) %></li>
+            </ul>
+        </div>
+
+        <div class="mt-4">
+            <% if (order.status === 'Processing') { %>
+                <form id="cancelOrderForm" action="/admin/orders/<%= order._id %>/cancel" method="POST">
+                    <button type="button" class="btn btn-danger" onclick="confirmCancelOrder()">Cancel Order</button>
+                </form>
+            <% } else { %>
+                <button class="btn btn-secondary" disabled>Cancel Order</button>
+            <% } %>
+        </div>
+
+        <% if (order.status === 'Return-Requested') { %>
+            <p><strong>Return Reason:</strong> <%= order.returnReason[0]?.reason %></p>
+            <p><strong>Additional Message:</strong> <%= order.returnReason[0]?.message %></p>
+            <form id="approveReturnForm" action="/admin/orders/<%= order._id %>/approve-return" method="POST">
+                <button type="button" class="btn btn-success" onclick="confirmApproveReturn()">Approve Return</button>
+            </form>
+            <form id="cancelReturnForm" action="/admin/orders/<%= order._id %>/cancel-return" method="POST">
+                <button type="button" class="btn btn-danger" onclick="confirmCancelReturn()">Cancel Return</button>
+            </form>
+        <% } %>
+        
+
+        <div class="mt-4">
+            <a href="/admin/orders" class="btn btn-primary">Back to Orders</a>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+    <script>
+        function confirmCancelOrder() {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to cancel this order?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, cancel it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('cancelOrderForm').submit();
+                }
+            });
+        }
+    </script>
+
+
+
+<script>
+    function confirmApproveReturn() {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'Do you want to approve this return?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, approve it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('approveReturnForm').submit();
+        }
+    });
+}
+
+function confirmCancelReturn() {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'Do you want to cancel this return?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, cancel it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('cancelReturnForm').submit();
+        }
+    });
+}
+
+</script>
+
+</body>
+
+</html>
+
+

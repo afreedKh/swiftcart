@@ -1,47 +1,26 @@
 <%-include("../layouts/adminEditCategory.ejs") %>
-<div class="sidebar">
-    <a href="/admin/dashboard"><img src="/assets/images/logo/logo_black.png" alt="SwiftCart" class="img-flui"></a>
-        <a href="/admin/dashboard">Dashboard</a>
-        <a href="/admin/product">Product</a>
-        <a href="/admin/categories">Categories</a>
-        <a href="/admin/payments">Payments</a>
-        <a href="/admin/brands">Brands</a>
-        <a href="/admin/userManagement">Users</a>
-        <a href="/admin/orders">Orders</a>
-        <a href="/admin/coupon">Coupon</a>
-        <a href="/admin/banner">Banner</a>
-        <a href="/admin/logout">Log Out</a>
-</div>
+
 
 <div class="content">
     <div class="header">
         <h1>Edit Category</h1>
-        <form action="/admin/updateCategories/<%=category._id%>" method="POST">
-            <div class="form-group">
-                <label for="Category name">Update Category</label>
-                <input type="text" name="name" value="<%=category.name%>" class="form-control-file" id="">
-                <p style="color: red;"><%= locals.invalidName ? invalidName : "" %></p>
-            <button  type="submit" class="btn btn-primary">Update Category</button>
-        </form>
     </div>
+
+    <form action="/admin/updateCategories/<%= category._id %>" method="POST">
+        <div class="form-group">
+            <label for="name">Update Category</label>
+            <input type="text" name="name" value="<%= category.name %>" class="form-control" id="name" placeholder="Enter category name">
+            <p class="error-message"><%= locals.invalidName ? locals.invalidName : "" %></p>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Category</button>
+    </form>
+    <br>
+    <a href="/admin/categories"> <button type="submit" class="btn btn-primary">Go Back</button></a>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
-<!-- <script>
-
-    function saved(){
-        Swal.fire({
-        position: "center",
-        icon: "success",
-        title: "Your work has been saved",
-        showConfirmButton: false,
-        timer: 2000
-    });
-
-    }
-
-</script> -->
 
 <%-include("../layouts/footer.ejs") %>

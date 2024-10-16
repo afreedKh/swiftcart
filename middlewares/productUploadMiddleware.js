@@ -6,6 +6,7 @@ const multer = require('multer');
 
 
 const storage = multer.diskStorage({
+  
     destination: 'public/assets/images/product/default/home-3', 
     filename: function (req, file, cb) {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);

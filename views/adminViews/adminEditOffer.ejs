@@ -1,0 +1,247 @@
+<%- include("../layouts/adminCategoryHeader.ejs") %>
+<style>
+    .form-control {
+        width: 50%;
+    }
+</style>
+
+<div class="content">
+    <div class="header">
+        <h1>Edit Offer</h1>
+    </div>
+    
+    <form id="offerForm" >
+        <div class="form-group">
+            <label for="name">Offer Name</label>
+            <input type="text" name="name" class="form-control" value="<%= offer.name %>" placeholder="Enter Offer Name">
+            <span id="nameError" class="error-message text-danger"></span>
+        </div>
+    
+        <div class="form-group">
+            <label for="discount">Discount (%)</label>
+            <input type="number" name="discount" class="form-control" value="<%= offer.discount %>" placeholder="Enter Discount Percentage">
+            <span id="discountError" class="error-message text-danger"></span>
+        </div>
+    
+        <div class="form-group">
+            <label for="startDate">Start Date</label>
+            <input type="date" name="startDate" class="form-control" value="<%= offer.startDate.toISOString().split('T')[0] %>">
+            <span id="startDateError" class="error-message text-danger"></span>
+        </div>
+    
+        <div class="form-group">
+            <label for="endDate">End Date</label>
+            <input type="date" name="endDate" class="form-control" value="<%= offer.endDate.toISOString().split('T')[0] %>">
+            <span id="endDateError" class="error-message text-danger"></span>
+        </div>
+    
+        <!-- Offer Type Selection -->
+        <div class="form-group">
+            <label>Offer Type</label><br>
+            <input type="radio" name="type" value="product" id="offerTypeProduct" <%= offer.type === 'product' ? 'checked' : '' %>>
+            <label for="offerTypeProduct">Product</label>
+            <input type="radio" name="type" value="category" id="offerTypeCategory" <%= offer.type === 'category' ? 'checked' : '' %>>
+            <label for="offerTypeCategory">Category</label>
+            <span id="offerTypeError" class="error-message text-danger"></span>
+        </div>
+    
+        <!-- Product Selection (hidden initially if category is selected) -->
+        <div class="form-group" id="productSection">
+            <label for="product">Select Products</label>
+            <div style="max-height: 200px; overflow-y: auto;">
+                <% products.forEach(function(product) { %>
+                    <div class="form-check" >
+                        <input type="checkbox" name="applicableId[]" value="<%= product._id %>" <%= offer.applicableId.includes(product._id.toString()) ? 'checked' : '' %> class="form-check-input">
+                        <label class="form-check-label"><%= product.name %></label>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    
+        <!-- Category Selection (hidden initially if product is selected) -->
+        <div class="form-group" id="categorySection" style="display: none;">
+            <label for="category">Select Categories</label>
+            <div>
+                <% categories.forEach(function(category) { %>
+                    <div class="form-check">
+                        <input type="checkbox" name="applicableId[]" value="<%= category._id %>" <%= offer.applicableId.includes(category._id.toString()) ? 'checked' : '' %> class="form-check-input">
+                        <label class="form-check-label"><%= category.name %></label>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    
+        <span id="applicableIdError" class="error-message text-danger"></span>
+    
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Update Offer</button>
+        </div>
+    </form>
+    <br>
+        <a href="/admin/offers"> <button type="submit" class="btn btn-primary">Go Back</button></a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('success')) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: urlParams.get('success'),
+                confirmButtonText: 'OK'
+            }).then(() => {
+                window.location.href = '/admin/offers';
+            });
+        }
+        
+        // Toggle between product and category section based on offer type selection
+        document.querySelectorAll('input[name="type"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'product') {
+                    document.getElementById('productSection').style.display = 'block';
+                    document.getElementById('categorySection').style.display = 'none';
+                } else if (this.value === 'category') {
+                    document.getElementById('productSection').style.display = 'none';
+                    document.getElementById('categorySection').style.display = 'block';
+                }
+            });
+        });
+        
+        // Set initial state based on the current offer type
+        const selectedOfferType = document.querySelector('input[name="type"]:checked').value;
+        if (selectedOfferType === 'product') {
+            document.getElementById('productSection').style.display = 'block';
+            document.getElementById('categorySection').style.display = 'none';
+        } else if (selectedOfferType === 'category') {
+            document.getElementById('productSection').style.display = 'none';
+            document.getElementById('categorySection').style.display = 'block';
+        }
+    });
+
+    document.getElementById('offerForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        let isValid = true;
+
+        // Clear previous error messages
+        document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+
+        // Validate Offer Name
+        const offerName = document.querySelector('input[name="name"]').value.trim();
+        const offerNameRegex = /^[A-Za-z0-9][A-Za-z0-9 ]{1,48}[A-Za-z0-9]$/;
+
+        if (!offerName || !offerNameRegex.test(offerName)) {
+            document.getElementById('nameError').textContent = 'Offer name must be between 3 to 50 characters.';
+            isValid = false;
+        }
+
+        // Validate Discount Value
+        const discountValue = document.querySelector('input[name="discount"]').value;
+        if (!discountValue) {
+            document.getElementById('discountError').textContent = 'Discount value is required.';
+            isValid = false;
+        } else if (discountValue <= 0) {
+            document.getElementById('discountError').textContent = 'Discount value must be greater than 0.';
+            isValid = false;
+        }
+
+        // Validate Start Date
+        const startDate = document.querySelector('input[name="startDate"]').value;
+        const currentDate = new Date();
+
+        // Resetting currentDate time to midnight (00:00:00)
+        currentDate.setHours(0, 0, 0, 0);
+
+        // Parsing the startDate input and setting its time to midnight
+        const selectedDate = new Date(startDate);
+        selectedDate.setHours(0, 0, 0, 0);
+
+        if (!startDate) {
+            document.getElementById('startDateError').textContent = 'Start date is required.';
+            isValid = false;
+        } else if (selectedDate < currentDate) {
+            document.getElementById('startDateError').textContent = 'Start date must be today or a future date.';
+            isValid = false;
+        } else {
+            document.getElementById('startDateError').textContent = ''; // Clear any existing error
+        }
+
+        // Validate End Date
+        const endDate = document.querySelector('input[name="endDate"]').value;
+        if (!endDate) {
+            document.getElementById('endDateError').textContent = 'End date is required.';
+            isValid = false;
+        } else if (new Date(endDate) <= new Date(startDate)) {
+            document.getElementById('endDateError').textContent = 'End date must be after the start date.';
+            isValid = false;
+        }
+
+        // Validate Offer Type Selection
+        const offerType = document.querySelector('input[name="type"]:checked');
+        if (!offerType) {
+            document.getElementById('offerTypeError').textContent = 'Please select an offer type.';
+            isValid = false;
+        }
+
+        // Validate Applicable IDs
+        const applicableIds = document.querySelectorAll('input[name="applicableId[]"]:checked');
+        if (applicableIds.length === 0) {
+            document.getElementById('applicableIdError').textContent = 'Please select at least one product or category.';
+            isValid = false;
+        }
+
+        if (isValid) {
+        const form = document.getElementById('offerForm');
+        const formData = new FormData(form);
+
+        // Convert FormData to a plain object
+        const data = {};
+        formData.forEach((value, key) => {
+            if (data[key]) {
+                // If the key already exists, convert to array if not already
+                if (!Array.isArray(data[key])) {
+                    data[key] = [data[key]];
+                }
+                data[key].push(value);
+            } else {
+                data[key] = value;
+            }
+        });
+
+        // Convert applicableId[] to applicableId if needed
+        if (data['applicableId[]']) {
+            data['applicableId'] = data['applicableId[]'];
+            delete data['applicableId[]'];
+        }
+
+        // Convert the object to JSON
+        const jsonData = JSON.stringify(data);
+
+        fetch('/admin/editOffer/<%= offer._id %>', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: jsonData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = '/admin/offers?success=' + encodeURIComponent(data.message);
+            } else {
+               document.getElementById("nameError").textContent = data.message
+                
+            }
+        })
+        .catch(error => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An unexpected error occurred. Please try again later.'
+            });
+        });
+    }
+
+    });
+</script>
+<%- include("../layouts/footer.ejs") %>
