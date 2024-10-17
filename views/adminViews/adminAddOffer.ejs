@@ -190,12 +190,19 @@
 
 
     if(isValid){
+        const now = new Date();
+    const startDateTime = new Date(document.getElementById("startDate").value);
+    startDateTime.setHours(now.getHours(), now.getMinutes(), now.getSeconds());
+
+    const endDateTime = new Date(document.getElementById("endDate").value);
+    endDateTime.setHours(23, 59, 59); // Set end time to end of day
+
         const formData ={
             name:document.getElementById("name").value.trim(),
             type: document.querySelector('input[name="type"]:checked').value,
             discount:document.getElementById("discount").value,
-            startDate:document.getElementById("startDate").value,
-            endDate:document.getElementById("endDate").value,
+            startDate:startDateTime.toISOString(),
+            endDate:endDateTime.toISOString(),
             applicableId: Array.from(document.querySelectorAll('input[name="applicableId[]"]:checked')).map(el => el.value)
 
         }
