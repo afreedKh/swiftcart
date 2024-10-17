@@ -1,6 +1,7 @@
 const passport = require("passport");
 const googleStrategy = require("passport-google-oauth2").Strategy;
-const User = require('/home/user/Swift Cart ecommerce/models/userModel')
+const User = require('./models/userModel')
+
 
 passport.serializeUser((user,done)=>{
     done(null, user);
