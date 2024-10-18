@@ -102,6 +102,71 @@ th {
   }
 }
     </style>
+
+
+<style>
+    .address-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.address-header {
+    margin-bottom: 10px;
+}
+
+.address-type {
+    font-weight: bold;
+    color: #4a4a4a;
+}
+
+.address-body {
+    margin-bottom: 15px;
+}
+
+.address-radio {
+    margin-right: 10px;
+}
+
+.address-body strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.address-body span {
+    display: block;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.address-actions {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 10px;
+}
+
+.action-link {
+    text-decoration: none;
+    padding: 5px 10px;
+    margin-left: 10px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.edit-address {
+    color: #4285f4;
+    border: 1px solid #4285f4;
+}
+
+.delete-address {
+    color: #ea4335;
+    border: 1px solid #ea4335;
+}
+</style>
+    
     
     <!-- Start Header Area -->
     <header class="header-section d-none d-xl-block">
@@ -541,20 +606,10 @@ th {
                                 </div>
                             <form action="/placeOrder" method="post">
                                 
-                                <%user.addressess.forEach((address,index)=>{%>
+                                <% user.addressess.forEach((address, index) => { %>
                                     <div class="address-card">
                                         <div class="address-header">
-                                            <span class="address-type"><%=address.addressType%></span>
-                                    
-                                            <div class="address-actions">
-                                              
-                                                <button type="button" class="action-button">⋮</button>
-                                                <div class="dropdown-content">
-                                                    <a href="/delivery/address/edit/<%=address._id%>" class="edit-address">Edit</a>
-                                                    <a href="/delivery/address/delete/<%=address._id%>" class="delete-address">Delete</a>
-
-                                                </div>
-                                            </div>
+                                            <span class="address-type"><%= address.addressType %></span>
                                         </div>
                                         
                                         <div class="address-body"> 
@@ -567,8 +622,13 @@ th {
                                                 <%= address.city %>, <%= address.state %> - <strong><%= address.pincode %></strong>
                                             </p>
                                         </div>
+                                
+                                        <div class="address-actions">
+                                            <a href="/delivery/address/edit/<%= address._id %>" class="action-link edit-address">Edit</a>
+                                            <a href="/delivery/address/delete/<%= address._id %>" class="action-link delete-address">Delete</a>
+                                        </div>
                                     </div>
-                               <% })%>
+                                <% }) %>
                                 
                                 
                             </div>
