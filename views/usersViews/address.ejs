@@ -580,8 +580,8 @@
                             <div class="address-header">
                                 <span class="address-type"><%= address.addressType %></span>
                                 <div class="address-actions">
-                                    <button class="action-button" onclick="toggleDropdown(this)">⋮</button>
-                                    <div class="dropdown-content">
+                                    <button class="action-button" data-dropdown-id="<%= index %>">⋮</button>
+                                    <div class="dropdown-content" id="dropdown-<%= index %>">
                                         <a href="/address/edit/<%= address._id %>" class="edit-address">Edit</a>
                                         <a href="/address/delete/<%= address._id %>" class="delete-address">Delete</a>
                                     </div>
@@ -1002,31 +1002,35 @@
 
 
     <script>
-        function toggleDropdown(button) {
-    const dropdownContent = button.nextElementSibling;
-    const allDropdowns = document.querySelectorAll('.dropdown-content');
+     document.addEventListener('DOMContentLoaded', function() {
+    const actionButtons = document.querySelectorAll('.action-button');
     
-    // Close all other open dropdowns
-    allDropdowns.forEach(dropdown => {
-        if (dropdown !== dropdownContent && dropdown.classList.contains('show')) {
-            dropdown.classList.remove('show');
-        }
+    actionButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const dropdownId = this.getAttribute('data-dropdown-id');
+            const dropdown = document.getElementById(`dropdown-${dropdownId}`);
+            
+            // Close all other dropdowns
+            document.querySelectorAll('.dropdown-content').forEach(d => {
+                if (d !== dropdown) {
+                    d.classList.remove('show');
+                }
+            });
+            
+            // Toggle the clicked dropdown
+            dropdown.classList.toggle('show');
+        });
     });
     
-    // Toggle the clicked dropdown
-    dropdownContent.classList.toggle('show');
-}
-
-// Close dropdowns when clicking outside
-document.addEventListener('click', function(event) {
-    if (!event.target.matches('.action-button')) {
-        const dropdowns = document.querySelectorAll('.dropdown-content');
-        dropdowns.forEach(dropdown => {
-            if (dropdown.classList.contains('show')) {
+    // Close dropdowns when tapping outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.matches('.action-button')) {
+            document.querySelectorAll('.dropdown-content').forEach(dropdown => {
                 dropdown.classList.remove('show');
-            }
-        });
-    }
+            });
+        }
+    });
 });
     </script>
     
