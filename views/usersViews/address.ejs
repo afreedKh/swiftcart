@@ -33,13 +33,17 @@
                 display: block;
             }
         }
-        .dropdown-content {
+        </style>
+
+        <style>
+            .dropdown-content {
     display: none;
     position: absolute;
     background-color: #f9f9f9;
-    min-width: 160px;
+    min-width: 120px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
+    right: 0;
 }
 
 .dropdown-content a {
@@ -49,21 +53,13 @@
     display: block;
 }
 
-.dropdown-content a:hover {background-color: #f1f1f1;}
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
 
-/* Show the dropdown when it is active */
-.dropdown-content.show {
+.show {
     display: block;
 }
-
-/* Ensure dropdown is positioned properly for mobile */
-@media only screen and (max-width: 768px) {
-    .dropdown-content {
-        position: relative; /* Adjust positioning */
-        width: 100%; /* Full width for mobile view */
-    }
-}
-
         </style>
 
     <header class="header-section d-none d-xl-block">
@@ -584,7 +580,7 @@
                             <div class="address-header">
                                 <span class="address-type"><%= address.addressType %></span>
                                 <div class="address-actions">
-                                    <button class="action-button">⋮</button>
+                                    <button class="action-button" onclick="toggleDropdown(this)">⋮</button>
                                     <div class="dropdown-content">
                                         <a href="/address/edit/<%= address._id %>" class="edit-address">Edit</a>
                                         <a href="/address/delete/<%= address._id %>" class="delete-address">Delete</a>
@@ -1003,20 +999,36 @@
     <!-- Main JS -->
     <script src="/assets/js/main.js"></script>
 
-<script>
-    document.querySelectorAll('.action-button').forEach(button => {
-    button.addEventListener('click', toggleDropdown);
-    button.addEventListener('touchstart', toggleDropdown);
-});
 
-function toggleDropdown(event) {
-    const dropdown = event.target.nextElementSibling;
-    dropdown.classList.toggle('show');
+
+    <script>
+        function toggleDropdown(button) {
+    const dropdownContent = button.nextElementSibling;
+    const allDropdowns = document.querySelectorAll('.dropdown-content');
+    
+    // Close all other open dropdowns
+    allDropdowns.forEach(dropdown => {
+        if (dropdown !== dropdownContent && dropdown.classList.contains('show')) {
+            dropdown.classList.remove('show');
+        }
+    });
+    
+    // Toggle the clicked dropdown
+    dropdownContent.classList.toggle('show');
 }
 
-</script>
-
-    
+// Close dropdowns when clicking outside
+document.addEventListener('click', function(event) {
+    if (!event.target.matches('.action-button')) {
+        const dropdowns = document.querySelectorAll('.dropdown-content');
+        dropdowns.forEach(dropdown => {
+            if (dropdown.classList.contains('show')) {
+                dropdown.classList.remove('show');
+            }
+        });
+    }
+});
+    </script>
     
     <script>
 
