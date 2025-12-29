@@ -43,15 +43,17 @@ const generateOtp = ()=>{
 const sendVerificationEmail = async (email,otp)=>{
     try {
         const transporter =  nodemailer.createTransport({
-            service:"gmail",
+            host:"smtp-relay.brevo.com",
+            port:587,
+            secure:false,
             auth:{
-                user:process.env.NODEMAILER_EMAIL,
-                pass:process.env.NODEMAILER_PASSWORD
+                user:process.env.BREVO_SMTP_USER,
+                pass:process.env.BREVO_SMTP_KEY
             },
         })
 
         const info = await transporter.sendMail({
-            from:process.env.NODEMAILER_EMAIL,
+            from:process.env.EMAIL,
             to:email,
             subject:"Verify your account",
             text:`Your OTP is ${otp}`,
@@ -78,19 +80,17 @@ const sendVerificationEmail = async (email,otp)=>{
 const sendResetPasswordEmail = async (name,email,token)=>{
     try {
         const transporter =  nodemailer.createTransport({
-
-            service:"gmail",
+            host:"smtp-relay.brevo.com",
             port:587,
             secure:false,
-            requireTLS:true,
             auth:{
-                user:process.env.NODEMAILER_EMAIL,
-                pass:process.env.NODEMAILER_PASSWORD
-            }
+                user:process.env.BREVO_SMTP_USER,
+                pass:process.env.BREVO_SMTP_KEY
+            },
         })
 
         const info = await transporter.sendMail({
-            from:process.env.NODEMAILER_EMAIL,
+            from:process.env.EMAIL,
             to:email,
             subject:"For Reset Password",
             html:`<p>Hii ${name} please click here to <a href="https://swiftcart-7fm5.onrender.com/resetPassword?token=${token}"> Reset</a> your password</p>`
