@@ -4,7 +4,7 @@ const dotenv = require("dotenv").config();
 const db = require('./config/db')
 db();
 const path = require('path');
-const port = process.env.PORT;
+const port = process.env.PORT || 4000;
 
 
 
@@ -26,8 +26,8 @@ app.use((req, res, next) => {
 
 db().then(() => {
    
-    app.listen(process.env.PORT, () => {
-        console.log(`Server is running on port ${process.env.PORT}`);
+    app.listen(port, () => {
+        console.log(`Server is running on port ${port}`);
     });
 }).catch(error => {
     console.error('Failed to connect to the database', error);
