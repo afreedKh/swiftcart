@@ -40,7 +40,7 @@ const userManagement = async (req,res)=>{
 const blockUser = async(req,res)=>{
     try {
         if(req.session&&req.session.admin){
-            delete req.session.user
+             req.session.user ? delete req.session.user : delete req.session.passport
         }
        
         await User.findByIdAndUpdate(req.params.id,{isBlocked:true})
