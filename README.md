@@ -4,5 +4,5 @@ This project is created for educational purposes only. It is not affiliated with
 
 ## build and run command
 
-npm install
-npm start
+#npm install
+#npm start
