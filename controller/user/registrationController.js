@@ -97,7 +97,7 @@ const sendResetPasswordEmail = async (name,email,token)=>{
             from:process.env.NODEMAILER_EMAIL,
             to:email,
             subject:"For Reset Password",
-            html:`<p>Hii ${name} please click here to <a href="https://swiftcart.uno/resetPassword?token=${token}"> Reset</a> your password</p>`
+            html:`<p>Hii ${name} please click here to <a href="https://swiftcart-7fm5.onrender.com/resetPassword?token=${token}"> Reset</a> your password</p>`
         })
 
         return info.accepted.length>0

@@ -14,7 +14,7 @@ passport.deserializeUser((user,done)=>{
 passport.use(new googleStrategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: "https://swiftcart.uno/auth/google/callback",
+    callbackURL: "https://swiftcart-7fm5.onrender.com/auth/google/callback",
     passReqToCallback: true
 }, async (request, accessToken, refreshToken, profile, done) => {
     try {
