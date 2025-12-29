@@ -50,7 +50,17 @@ const sendVerificationEmail = async (email,otp)=>{
                 user:process.env.BREVO_SMTP_USER,
                 pass:process.env.BREVO_SMTP_KEY
             },
+            tls: {
+                rejectUnauthorized: false
+            },
+
+            connectionTimeout: 10000,
+            greetingTimeout: 10000,
+            socketTimeout: 10000
         })
+
+        await transporter.verify();
+         console.log('Server is ready to send emails');
 
         const info = await transporter.sendMail({
             from:process.env.EMAIL,
@@ -59,7 +69,7 @@ const sendVerificationEmail = async (email,otp)=>{
             text:`Your OTP is ${otp}`,
             html:`<b>Your OTP:${otp}</b>`
         })
-
+        console.log('Email sent successfully:', info.messageId);
         return info.accepted.length>0
 
     } catch (error) {
