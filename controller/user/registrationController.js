@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt')
 const nodemailer = require('nodemailer');
 const dotenv = require("dotenv").config();
 const randomstring = require("randomstring");
-
+const axios = require('axios');
 
 
 
@@ -35,50 +35,82 @@ const generateOtp = ()=>{
 
 
 
+const sendVerificationEmail = async (email, otp) => {
+  try {
+    const response = await axios.post(
+      "https://api.brevo.com/v3/smtp/email",
+      {
+        sender: {
+          name: "SwiftCart",
+          email: process.env.BREVO_SENDER_EMAIL, 
+        },
+        to: [
+          {
+            email: email,
+          },
+        ],
+        subject: "Verify your account",
+        htmlContent: `<p>Your OTP is <b>${otp}</b></p>`,
+      },
+      {
+        headers: {
+          "api-key": process.env.BREVO_API_KEY,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log("EMAIL SENT:", response.data);
+    return true;
+
+  } catch (error) {
+    console.error("BREVO API ERROR:", error.response?.data || error.message);
+    return false;
+  }
+};
 
 
 
 
+// const sendVerificationEmail = async (email,otp)=>{
+//     try {
+//         const transporter =  nodemailer.createTransport({
+//             host:"smtp-relay.brevo.com",
+//             port:587,
+//             secure:false,
+//             auth:{
+//                 user:process.env.BREVO_SMTP_USER,
+//                 pass:process.env.BREVO_SMTP_KEY
+//             },
+//             tls: {
+//                 rejectUnauthorized: false
+//             },
 
-const sendVerificationEmail = async (email,otp)=>{
-    try {
-        const transporter =  nodemailer.createTransport({
-            host:"smtp-relay.brevo.com",
-            port:587,
-            secure:false,
-            auth:{
-                user:process.env.BREVO_SMTP_USER,
-                pass:process.env.BREVO_SMTP_KEY
-            },
-            tls: {
-                rejectUnauthorized: false
-            },
+//             connectionTimeout: 10000,
+//             greetingTimeout: 10000,
+//             socketTimeout: 10000
+//         })
 
-            connectionTimeout: 10000,
-            greetingTimeout: 10000,
-            socketTimeout: 10000
-        })
+//         await transporter.verify();
+//          console.log('Server is ready to send emails');
 
-        await transporter.verify();
-         console.log('Server is ready to send emails');
+//         const info = await transporter.sendMail({
+//             from:process.env.EMAIL,
+//             to:email,
+//             subject:"Verify your account",
+//             text:`Your OTP is ${otp}`,
+//             html:`<b>Your OTP:${otp}</b>`
+//         })
+//         console.log('Email sent successfully:', info.messageId);
+//         return info.accepted.length>0
 
-        const info = await transporter.sendMail({
-            from:process.env.EMAIL,
-            to:email,
-            subject:"Verify your account",
-            text:`Your OTP is ${otp}`,
-            html:`<b>Your OTP:${otp}</b>`
-        })
-        console.log('Email sent successfully:', info.messageId);
-        return info.accepted.length>0
-
-    } catch (error) {
-        console.log("Sent verification email error",error.message);
-        console.error("NODEMAILER ERROR:", error);
-        return false
+//     } catch (error) {
+//         console.log("Sent verification email error",error.message);
+//         console.error("NODEMAILER ERROR:", error);
+//         return false
         
-    }
-}
+//     }
+// }
 
 
 
