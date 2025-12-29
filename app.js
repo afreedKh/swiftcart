@@ -22,7 +22,11 @@ const startServer = async () => {
   try {
     await db();
     app.listen(port, () => {
-      console.log(`Server is running on port ${port}`);
+      if(process.env.NODE_ENV==='development'){
+        console.log(`🚀 Server is running on http://localhost:${port}`);
+      }else{
+        console.log('🚀 Server Started');
+      }
     });
   } catch (error) {
     console.error("Failed to connect to the database", error);

@@ -1,7 +1,7 @@
 const passport = require("passport");
 const googleStrategy = require("passport-google-oauth2").Strategy;
 const User = require('./models/userModel')
-
+const {BASE_URL} = require('./config/config')
 
 passport.serializeUser((user,done)=>{
     done(null, user);
@@ -14,7 +14,7 @@ passport.deserializeUser((user,done)=>{
 passport.use(new googleStrategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: "https://swiftcart-7fm5.onrender.com/auth/google/callback",
+    callbackURL: `${BASE_URL}/auth/google/callback`,
     passReqToCallback: true
 }, async (request, accessToken, refreshToken, profile, done) => {
     try {

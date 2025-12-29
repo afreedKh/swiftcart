@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const dotenv = require("dotenv").config();
 const randomstring = require("randomstring");
 const axios = require("axios");
+const {BASE_URL} = require('../../config/config')
 
 const securePassword = async (password) => {
   try {
@@ -71,7 +72,7 @@ const sendResetPasswordEmail = async (name, email, token) => {
           <p>Hi ${name},</p>
           <p>Please click the link below to reset your password:</p>
           <p>
-            <a href="https://swiftcart-7fm5.onrender.com/resetPassword?token=${token}">
+            <a href="${BASE_URL}/resetPassword?token=${token}">
               Reset Password
             </a>
           </p>
