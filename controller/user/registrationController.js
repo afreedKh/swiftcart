@@ -44,9 +44,6 @@ const sendVerificationEmail = async (email,otp)=>{
     try {
         const transporter =  nodemailer.createTransport({
             service:"gmail",
-            port:587,
-            secure:false,
-            requireTLS:true,
             auth:{
                 user:process.env.NODEMAILER_EMAIL,
                 pass:process.env.NODEMAILER_PASSWORD
@@ -65,8 +62,7 @@ const sendVerificationEmail = async (email,otp)=>{
 
     } catch (error) {
         console.log("Sent verification email error",error.message);
-        
-
+        console.error("NODEMAILER ERROR:", error);
         return false
         
     }
@@ -221,7 +217,7 @@ const forgotVerify = async(req,res)=>{
        if(user){
             const randomString = randomstring.generate();
             await UserData.updateOne({email},{$set:{token:randomString}})
-            sendResetPasswordEmail(user.name,user.email,randomString);
+            await sendResetPasswordEmail(user.name,user.email,randomString);
             res.render("forgotPassword",{message:"Please check your mail to reset your password"});
        }else{
              res.render("forgotPassword",{message:"User Email is incorrect"})
